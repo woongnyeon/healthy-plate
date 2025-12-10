@@ -5,7 +5,7 @@ on:
     types:
       - closed
     branches:
-      # 기능 브랜치가 dev-be 또는 dev-fe로 머지될 때만 실행
+      # 기능 브랜치가 dev-be 또는 dev-fe로 머지될 때만 실행한다.
       - dev-be
       - dev-fe
 
