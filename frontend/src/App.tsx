@@ -4,10 +4,12 @@ import { RecipeLayout } from "./recipe/RecipeLayout";
 import { ChefsPage } from "./recipe/pages/ChefsPage";
 import { LatestPage } from "./recipe/pages/LatestPage";
 import { RecipeBookPage } from "./recipe/pages/RecipeBookPage";
+import { Header } from "./share/components/Header";
 
 function App() {
   return (
     <div className="flex min-h-screen bg-bg">
+      <Header />
       <main className="flex-1">
         <Routes>
           <Route element={<RecipeLayout />}>
