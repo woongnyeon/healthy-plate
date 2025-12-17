@@ -1,9 +1,9 @@
 import { useResponsive } from "../../share/hooks/useResonsive";
-// import { RecipeList } from "../components/RecipeList";
-import { useTrendRecipe } from "../hooks/useTrendRecipe";
+import { useLatestRecipe } from "../hooks/useLatestRecipe";
+import { RecipeList } from "../components/RecipeList";
 
 export const LatestPage = () => {
-  const { isLoading } = useTrendRecipe();
+  const { isLoading, recipes } = useLatestRecipe();
   const { gridCols } = useResponsive();
   if (isLoading) return <div>로딩중...</div>;
 
@@ -11,7 +11,7 @@ export const LatestPage = () => {
     <div
       className={`grid gap-4 ${gridCols === 4 ? "grid-cols-4" : "grid-cols-2"}`}
     >
-      hi
+      <RecipeList recipes={recipes} />
     </div>
   );
 };
