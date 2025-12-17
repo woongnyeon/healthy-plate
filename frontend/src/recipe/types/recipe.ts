@@ -5,6 +5,8 @@ export interface Recipe {
   author: string;
   like_count: number;
   comment_count: number;
+  category: string;
+  created_at: string;
 }
 
 export interface Comment {
