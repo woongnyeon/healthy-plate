@@ -20,6 +20,8 @@ export const useLatestRecipe = () => {
         author: "안성재명",
         like_count: 31,
         comment_count: 12,
+        category: "한식",
+        created_at: "2025-12-18"
       },
       {
         title: "도토리 국수 같노",
@@ -29,6 +31,8 @@ export const useLatestRecipe = () => {
         author: "안성재명",
         like_count: 31,
         comment_count: 12,
+        category: "한식",
+        created_at: "2025-12-18"
       },
       {
         title: "도토리 국수 같노",
@@ -38,6 +42,8 @@ export const useLatestRecipe = () => {
         author: "안성재명",
         like_count: 31,
         comment_count: 12,
+        category: "한식",
+        created_at: "2025-12-18"
       },
       {
         title: "도토리 국수 같노",
@@ -47,6 +53,8 @@ export const useLatestRecipe = () => {
         author: "안성재명",
         like_count: 31,
         comment_count: 12,
+        category: "한식",
+        created_at: "2025-12-18"
       },
       {
         title: "도토리 국수 같노",
@@ -56,6 +64,8 @@ export const useLatestRecipe = () => {
         author: "안성재명",
         like_count: 31,
         comment_count: 12,
+        category: "한식",
+        created_at: "2025-12-18"
       },
       {
         title: "도토리 국수 같노",
@@ -65,6 +75,8 @@ export const useLatestRecipe = () => {
         author: "안성재명",
         like_count: 31,
         comment_count: 12,
+        category: "한식",
+        created_at: "2025-12-18"
       },
       {
         title: "도토리 국수 같노",
@@ -74,6 +86,8 @@ export const useLatestRecipe = () => {
         author: "안성재명",
         like_count: 31,
         comment_count: 12,
+        category: "한식",
+        created_at: "2025-12-18"
       },
       {
         title: "도토리 국수 같노",
@@ -83,6 +97,8 @@ export const useLatestRecipe = () => {
         author: "안성재명",
         like_count: 31,
         comment_count: 12,
+        category: "한식",
+        created_at: "2025-12-18"
       },
       {
         title: "도토리 국수 같노",
@@ -92,6 +108,8 @@ export const useLatestRecipe = () => {
         author: "안성재명",
         like_count: 31,
         comment_count: 12,
+        category: "한식",
+        created_at: "2025-12-18"
       },
       {
         title: "도토리 국수 같노",
@@ -101,6 +119,8 @@ export const useLatestRecipe = () => {
         author: "안성재명",
         like_count: 31,
         comment_count: 12,
+        category: "한식",
+        created_at: "2025-12-18"
       },
       {
         title: "도토리 국수 같노",
@@ -110,6 +130,8 @@ export const useLatestRecipe = () => {
         author: "안성재명",
         like_count: 31,
         comment_count: 12,
+        category: "한식",
+        created_at: "2025-12-18"
       },
       {
         title: "도토리 국수 같노",
@@ -119,6 +141,8 @@ export const useLatestRecipe = () => {
         author: "안성재명",
         like_count: 31,
         comment_count: 12,
+        category: "한식",
+        created_at: "2025-12-18"
       },
     ];
   };
