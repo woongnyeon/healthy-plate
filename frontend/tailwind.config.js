@@ -13,6 +13,7 @@ export default {
         card: "#ffffff",
         meta: "#767676",
         header: "#111111",
+        profile: "#8D775E",
       },
       fontFamily: {
         sans: ["Pretendard", "ui-sans-serif", "system-ui"],
@@ -23,6 +24,7 @@ export default {
         "card-content": ["14px", { lineHeight: "20px" }],
         "card-meta": ["12px", { lineHeight: "16px" }],
         "header-items": ["16px", { lineHeight: "22px" }],
+        "profile-items": ["18px", { lineHeight: "20px" }],
       },
     },
   },
