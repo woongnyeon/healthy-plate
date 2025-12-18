@@ -30,7 +30,13 @@ export const useUserInfo = () => {
   };
 
   const clearUserInfo = () => {
-    localStorage.clear();
+    localStorage.removeItem("user");
+
+    setDummyUserInfo({
+      id: "",
+      email: "",
+      name: "",
+    });
   };
 
   return {
