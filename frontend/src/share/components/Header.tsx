@@ -5,7 +5,7 @@ export const Header = () => {
   const { handleLogin, handleLogout } = useUserInfo();
   const isActive = localStorage.getItem("user") ? true : false;
   return (
-    <header className="fixed top-0 left-0 w-full z-50 bg-bg">
+    <header className="fixed top-0 left-0 w-full z-50 bg-white">
       {/* 내부 컨텐츠 영역 */}
       <div className="h-14 flex items-center justify-between px-4 md:px-10 lg:px-[90px]">
         {/* 좌측 로고 */}
