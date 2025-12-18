@@ -1,6 +1,7 @@
 package com.healthy_plate.auth.domain.model;
 
 public enum OAuth2Provider {
+    
     GOOGLE("구글"),
     KAKAO("카카오"),
     NAVER("네이버");
