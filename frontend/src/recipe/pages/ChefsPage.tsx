@@ -11,7 +11,7 @@ export const ChefsPage = () => {
 
   return (
     <div
-      className={`grid gap-4 ${gridCols === 3 ? "grid-cols-3" : "grid-cols-2"}`}
+      className={`grid gap-4 ${gridCols === 3 ? "grid-cols-4" : "grid-cols-2"}`}
     >
       <RecipeList recipes={recipes} />
     </div>

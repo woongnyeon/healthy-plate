@@ -11,7 +11,7 @@ const NAV_ITEMS = [
 export const RecipeLayout = () => {
   return (
     <>
-      <div className="w-full mt-[50px] px-4 md:px-10 lg:px-12">
+      <div className="w-full mt-16 px-4 md:px-10 lg:px-12">
         <nav>
           <ul className="flex gap-4 md:gap-6 lg:gap-8 h-14 items-center">
             {NAV_ITEMS.map((item) => (
