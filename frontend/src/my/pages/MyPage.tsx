@@ -1,4 +1,6 @@
 import { DraftSection } from "../components/DraftSection/DraftSection";
+import { LikeRecipeSection } from "../components/LikeRecipeSection/LikeRecipeSection";
+
 import { Profile } from "../components/Profile";
 import { StatisticsSection } from "../components/SatisticsSection/SatisticsSection";
 import { StatisticsCard } from "../components/SatisticsSection/StatisticsCard";
@@ -42,6 +44,10 @@ export const MyPage = () => {
 
       <div className="mt-4">
         <DraftSection />
+      </div>
+
+      <div className="mt-4">
+        <LikeRecipeSection />
       </div>
     </div>
   );
