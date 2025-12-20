@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private static final String REFRESH_TOKEN_NAME = "refresh_token";
-    private static final String TARGET_URL = "http://localhost:3000/login/success";
+
+    @Value("${app.auth.success-url}")
+    private String targetUrl;
+
+    @Value("${app.cookie.secure}")
+    private boolean cookieSecure;
 
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtProperties jwtProperties;
@@ -49,7 +55,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         refreshTokenService.saveRefreshToken(oauth2User.getUserId(), refreshToken, jwtProperties.refreshTokenExpiration());
         addRefreshTokenCookies(response, refreshToken);
 
-        final String redirectUrl = UriComponentsBuilder.fromUriString(TARGET_URL)
+        final String redirectUrl = UriComponentsBuilder.fromUriString(targetUrl)
             .queryParam("isFirstLogin", user.isFirstLogin())
             .build()
             .toUriString();
@@ -66,7 +72,8 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         Cookie refreshTokenCookie = CookieUtil.createCookie(
             REFRESH_TOKEN_NAME,
             refreshToken,
-            (int) (jwtProperties.refreshTokenExpiration() / 1000)
+            (int) (jwtProperties.refreshTokenExpiration() / 1000),
+            cookieSecure
         );
         response.addCookie(refreshTokenCookie);
         log.info("토큰을 쿠키에 추가했습니다");

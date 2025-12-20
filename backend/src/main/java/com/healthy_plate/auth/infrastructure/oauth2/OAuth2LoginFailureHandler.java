@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class OAuth2LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-    private static final String FAILURE_REDIRECT_URL = "/login?error=true";
+    @Value("${app.auth.failure-url}")
+    private String failureRedirectUrl;
 
     @Override
     public void onAuthenticationFailure(
@@ -23,7 +25,7 @@ public class OAuth2LoginFailureHandler extends SimpleUrlAuthenticationFailureHan
     ) throws IOException {
 
         log.error("OAuth2 로그인 실패", exception);
-        String redirectUrl = UriComponentsBuilder.fromUriString(FAILURE_REDIRECT_URL)
+        String redirectUrl = UriComponentsBuilder.fromUriString(failureRedirectUrl)
             .queryParam("error", "oauth2_failed")
             .queryParam("message", "소셜 로그인에 실패했습니다")
             .build()

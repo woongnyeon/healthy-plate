@@ -10,10 +10,10 @@ public class CookieUtil {
     private CookieUtil() {
     }
 
-    public static Cookie createCookie(final String name, final String value, final int maxAge) {
+    public static Cookie createCookie(final String name, final String value, final int maxAge, final boolean secure) {
         Cookie cookie = new Cookie(name, value);
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        cookie.setSecure(secure);
         cookie.setPath("/");
         cookie.setMaxAge(maxAge);
         return cookie;
@@ -28,6 +28,6 @@ public class CookieUtil {
     }
 
     public static Cookie deleteCookie(final String name) {
-        return createCookie(name, "", 0);
+        return createCookie(name, "", 0, true);
     }
 }
