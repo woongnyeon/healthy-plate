@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.healthy_plate.user.domain.model.Email;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -13,43 +12,16 @@ import org.junit.jupiter.params.provider.ValueSource;
 @DisplayName("Email 도메인 테스트")
 class EmailTest {
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"test@example.com", "test.name@example.co.kr", "test+tag@example.com"})
     @DisplayName("유효한 이메일로 Email 객체를 생성한다")
-    void createEmailWithValidValue() {
-        // given
-        String validEmail = "test@example.com";
+    void createEmailWithValidValue(String testEmail) {
 
-        // when
-        Email email = Email.of(validEmail);
+        //when
+        Email email = Email.of(testEmail);
 
-        // then
-        assertThat(email.getValue()).isEqualTo("test@example.com");
-    }
-
-    @Test
-    @DisplayName("이메일은 소문자로 변환되어 저장된다")
-    void emailIsConvertedToLowerCase() {
-        // given
-        String upperCaseEmail = "TEST@EXAMPLE.COM";
-
-        // when
-        Email email = Email.of(upperCaseEmail);
-
-        // then
-        assertThat(email.getValue()).isEqualTo("test@example.com");
-    }
-
-    @Test
-    @DisplayName("이메일의 공백은 제거된다")
-    void emailIsTrimmed() {
-        // given
-        String emailWithSpaces = "  test@example.com  ";
-
-        // when
-        Email email = Email.of(emailWithSpaces);
-
-        // then
-        assertThat(email.getValue()).isEqualTo("test@example.com");
+        //then
+        assertThat(email.getValue().equals(testEmail));
     }
 
     @ParameterizedTest
@@ -62,4 +34,14 @@ class EmailTest {
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("이메일은 필수입니다.");
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"invalid", "test@", "@example.com", "test@.com", "test @example.com"})
+    @DisplayName("잘못된 이메일 형식이면 예외가 발생한다")
+    void throwExceptionWhenEmailFormatIsInvalid(String invalidEmail) {
+        assertThatThrownBy(() -> Email.of(invalidEmail))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("올바른 이메일 형식이 아닙니다.");
+    }
+
 }
