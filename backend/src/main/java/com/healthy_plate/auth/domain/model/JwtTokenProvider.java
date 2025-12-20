@@ -1,5 +1,6 @@
 package com.healthy_plate.auth.domain.model;
 
+import com.healthy_plate.user.domain.model.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -25,13 +26,14 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(jwtProperties.secretKey().getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateAccessToken(final Long userId, final String email) {
+    public String generateAccessToken(final Long userId, final String email, final UserRole role) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtProperties.accessTokenExpiration());
 
         return String.valueOf(Jwts.builder()
             .subject(String.valueOf(userId))
             .claim("email", email)
+            .claim("role", role.name())
             .issuedAt(now)
             .expiration(expiryDate)
             .signWith(getSigningKey())
@@ -58,6 +60,16 @@ public class JwtTokenProvider {
             .getPayload();
 
         return Long.parseLong(claims.getSubject());
+    }
+
+    public UserRole getRoleFromToken(String token) {
+        Claims claims = Jwts.parser()
+            .verifyWith(getSigningKey())
+            .build()
+            .parseSignedClaims(token)
+            .getPayload();
+
+        return UserRole.valueOf(claims.get("role", String.class));
     }
 
     public boolean validateToken(String token) {

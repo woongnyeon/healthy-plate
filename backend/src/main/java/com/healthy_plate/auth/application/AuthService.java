@@ -35,7 +35,8 @@ public class AuthService {
 
         return jwtTokenProvider.generateAccessToken(
             user.getId(),
-            user.getEmail().getValue()
+            user.getEmail().getValue(),
+            user.getRole()
         );
     }
 
@@ -69,7 +70,8 @@ public class AuthService {
 
         return jwtTokenProvider.generateAccessToken(
             user.getId(),
-            user.getEmail().getValue()
+            user.getEmail().getValue(),
+            user.getRole()
         );
     }
 

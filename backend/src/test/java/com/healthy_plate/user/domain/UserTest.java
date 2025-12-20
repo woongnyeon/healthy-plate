@@ -21,7 +21,7 @@ class UserTest {
         UserProfile profile = UserProfile.of("테스트유저", "https://example.com/profile.jpg");
         OAuth2Provider provider = OAuth2Provider.GOOGLE;
         String providerId = "google-123456";
-        UserRole role = UserRole.USER;
+        UserRole role = UserRole.ROLE_USER;
 
         // when
         User user = new User(email, profile, provider, providerId, role);
@@ -44,7 +44,7 @@ class UserTest {
         String providerId = "google-123";
 
         // when
-        User user = new User(email, profile, provider, providerId, UserRole.USER);
+        User user = new User(email, profile, provider, providerId, UserRole.ROLE_USER);
 
         // then
         assertThat(user.getProvider()).isEqualTo(OAuth2Provider.GOOGLE);
@@ -61,7 +61,7 @@ class UserTest {
         String providerId = "kakao-456";
 
         // when
-        User user = new User(email, profile, provider, providerId, UserRole.USER);
+        User user = new User(email, profile, provider, providerId, UserRole.ROLE_USER);
 
         // then
         assertThat(user.getProvider()).isEqualTo(OAuth2Provider.KAKAO);
@@ -78,7 +78,7 @@ class UserTest {
         String providerId = "naver-789";
 
         // when
-        User user = new User(email, profile, provider, providerId, UserRole.USER);
+        User user = new User(email, profile, provider, providerId, UserRole.ROLE_USER);
 
         // then
         assertThat(user.getProvider()).isEqualTo(OAuth2Provider.NAVER);
@@ -93,9 +93,9 @@ class UserTest {
         UserProfile profile = UserProfile.of("관리자", null);
 
         // when
-        User user = new User(email, profile, OAuth2Provider.GOOGLE, "admin-123", UserRole.ADMIN);
+        User user = new User(email, profile, OAuth2Provider.GOOGLE, "admin-123", UserRole.ROLE_ADMIN);
 
         // then
-        assertThat(user.getRole()).isEqualTo(UserRole.ADMIN);
+        assertThat(user.getRole()).isEqualTo(UserRole.ROLE_ADMIN);
     }
 }
