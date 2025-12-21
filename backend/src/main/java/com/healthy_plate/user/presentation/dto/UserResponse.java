@@ -1,6 +1,7 @@
 package com.healthy_plate.user.presentation.dto;
 
 import com.healthy_plate.user.domain.model.User;
+import com.healthy_plate.user.domain.model.UserProfile;
 
 public record UserResponse(
     Long id,
@@ -11,11 +12,12 @@ public record UserResponse(
 ) {
 
     public static UserResponse from(User user) {
+        UserProfile profile = user.getProfile();
         return new UserResponse(
             user.getId(),
             user.getEmail().getValue(),
-            user.getProfile().getNickname(),
-            user.getProfile().getProfileImageUrl(),
+            profile != null ? profile.getNickname() : null,
+            profile != null ? profile.getProfileImageUrl() : null,
             user.getProvider().name()
         );
     }
