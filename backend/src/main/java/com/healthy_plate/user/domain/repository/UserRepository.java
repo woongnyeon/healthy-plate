@@ -12,9 +12,4 @@ public interface UserRepository {
 
     Optional<User> findByProviderAndProviderId(OAuth2Provider provider, String providerId);
 
-    boolean existsByProviderAndProviderId(OAuth2Provider provider, String providerId);
-
-    Optional<User> findByEmail_Value(String email);
-
-    boolean existsByEmail_Value(String email);
 }

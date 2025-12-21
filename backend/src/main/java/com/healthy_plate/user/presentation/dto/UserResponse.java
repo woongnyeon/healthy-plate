@@ -1,4 +1,4 @@
-package com.healthy_plate.auth.presentation.dto;
+package com.healthy_plate.user.presentation.dto;
 
 import com.healthy_plate.user.domain.model.User;
 
