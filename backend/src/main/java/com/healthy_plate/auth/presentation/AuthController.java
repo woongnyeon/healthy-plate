@@ -3,10 +3,8 @@ package com.healthy_plate.auth.presentation;
 import com.healthy_plate.auth.application.AuthService;
 import com.healthy_plate.auth.domain.model.JwtProperties;
 import com.healthy_plate.auth.infrastructure.util.CookieUtil;
-import com.healthy_plate.auth.presentation.dto.AuthResponse;
-import com.healthy_plate.auth.presentation.dto.LoginSuccessResponse;
+import com.healthy_plate.auth.presentation.dto.TokenResponse;
 import com.healthy_plate.auth.presentation.dto.UpdateNicknameRequest;
-import com.healthy_plate.user.domain.model.User;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,36 +34,34 @@ public class AuthController implements SwaggerAuthController {
     private boolean cookieSecure;
 
     @PostMapping("/success")
-    public ResponseEntity<LoginSuccessResponse> refreshToken(
+    public ResponseEntity<TokenResponse> refreshToken(
         final HttpServletRequest request
     ) {
         String refreshToken = CookieUtil.findRefreshTokenWithCookie(request.getCookies());
         String newAccessToken = authService.generateAccessToken(refreshToken);
 
-        return ResponseEntity.ok(LoginSuccessResponse.from(newAccessToken));
+        return ResponseEntity.ok(new TokenResponse(newAccessToken));
     }
 
     @GetMapping("/token")
-    public ResponseEntity<AuthResponse> getAccessToken(
+    public ResponseEntity<TokenResponse> getAccessToken(
         final HttpServletRequest request
     ) {
         String refreshToken = CookieUtil.findRefreshTokenWithCookie(request.getCookies());
         String accessToken = authService.generateAccessToken(refreshToken);
-        User user = authService.getUserFromRefreshToken(refreshToken);
 
-        return ResponseEntity.ok(AuthResponse.of(accessToken, user));
+        return ResponseEntity.ok(new TokenResponse(accessToken));
     }
 
     @PatchMapping("/register")
-    public ResponseEntity<AuthResponse> registerNickname(
+    public ResponseEntity<TokenResponse> registerNickname(
         @Valid @RequestBody final UpdateNicknameRequest request,
         final HttpServletRequest httpRequest
     ) {
         String refreshToken = CookieUtil.findRefreshTokenWithCookie(httpRequest.getCookies());
         String accessToken = authService.registerNickname(refreshToken, request.nickname());
-        User user = authService.getUserFromRefreshToken(refreshToken);
 
-        return ResponseEntity.ok(AuthResponse.of(accessToken, user));
+        return ResponseEntity.ok(new TokenResponse(accessToken));
     }
 
     @PostMapping("/logout")
