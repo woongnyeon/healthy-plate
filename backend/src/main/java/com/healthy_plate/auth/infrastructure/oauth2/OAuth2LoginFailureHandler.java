@@ -30,6 +30,7 @@ public class OAuth2LoginFailureHandler extends SimpleUrlAuthenticationFailureHan
             .queryParam("error", AuthenticationErrorCode.OAUTH2_LOGIN_FAILED.getCode())
             .queryParam("message", AuthenticationErrorCode.OAUTH2_LOGIN_FAILED.getMessage())
             .build()
+            .encode()
             .toUriString();
 
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);

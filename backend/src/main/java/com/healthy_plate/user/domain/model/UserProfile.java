@@ -39,9 +39,12 @@ public class UserProfile {
         return profile;
     }
 
-    public void updateNickname(String nickname) {
+    public void updateNickname(final String nickname,final String profileImageUrl,final String introduction) {
         validateName(nickname);
+        validateIntroduction(introduction);
         this.nickname = nickname.trim();
+        this.profileImageUrl = profileImageUrl;
+        this.introduction = introduction;
     }
 
     public boolean isNicknameSet() {

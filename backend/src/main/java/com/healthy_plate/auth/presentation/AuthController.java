@@ -49,7 +49,7 @@ public class AuthController implements SwaggerAuthController {
         final HttpServletRequest httpRequest
     ) {
         String refreshToken = CookieUtil.findRefreshTokenWithCookie(httpRequest.getCookies());
-        String accessToken = authService.registerNickname(refreshToken, request.nickname());
+        String accessToken = authService.registerNickname(refreshToken, request);
 
         return ResponseEntity.ok(new TokenResponse(accessToken));
     }
