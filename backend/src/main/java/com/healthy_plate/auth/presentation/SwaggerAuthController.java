@@ -111,7 +111,7 @@ public interface SwaggerAuthController {
         }
     )
     ResponseEntity<Void> logout(
-        @CookieValue(name = "refreshToken") String refreshToken,
+        @CookieValue(name = "refresh_token") String refreshToken,
         HttpServletResponse response
     );
 }

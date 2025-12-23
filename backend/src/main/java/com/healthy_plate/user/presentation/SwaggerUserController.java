@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Tag(name = "사용자", description = "사용자 관련 API")
 public interface SwaggerUserController {
@@ -43,4 +44,19 @@ public interface SwaggerUserController {
         }
     )
     ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal Long userId);
+
+    @Operation(
+        summary = "닉네임 중복 확인",
+        description = "특정 닉네임이 이미 사용 중인지 확인합니다.",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "중복 확인 성공 (true: 중복됨, false: 사용 가능)",
+                content = @Content(
+                    schema = @Schema(implementation = Boolean.class)
+                )
+            )
+        }
+    )
+    ResponseEntity<Boolean> isDuplicatedNickname(@PathVariable String nickname);
 }
