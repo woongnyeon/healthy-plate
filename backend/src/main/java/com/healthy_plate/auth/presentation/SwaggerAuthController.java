@@ -2,6 +2,7 @@ package com.healthy_plate.auth.presentation;
 
 import com.healthy_plate.auth.presentation.dto.TokenResponse;
 import com.healthy_plate.auth.presentation.dto.UpdateNicknameRequest;
+import com.healthy_plate.shared.error.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,7 +12,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -98,14 +98,14 @@ public interface SwaggerAuthController {
                 responseCode = "401",
                 description = "유효하지 않은 리프레시 토큰",
                 content = @Content(
-                    schema = @Schema(implementation = String.class)
+                    schema = @Schema(implementation = ErrorResponse.class)
                 )
             ),
             @ApiResponse(
                 responseCode = "400",
                 description = "잘못된 요청",
                 content = @Content(
-                    schema = @Schema(implementation = String.class)
+                    schema = @Schema(implementation = ErrorResponse.class)
                 )
             )
         }
