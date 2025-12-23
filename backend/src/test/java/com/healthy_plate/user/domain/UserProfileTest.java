@@ -14,14 +14,15 @@ import org.junit.jupiter.params.provider.ValueSource;
 class UserProfileTest {
 
     @Test
-    @DisplayName("유효한 닉네임과 프로필 이미지 URL로 UserProfile 객체를 생성한다")
+    @DisplayName("유효한 닉네임과 프로필 이미지 URL, 자기소개로 UserProfile 객체를 생성한다")
     void createUserProfileWithValidValues() {
         // given
         String nickname = "테스트유저";
         String profileImageUrl = "https://example.com/profile.jpg";
+        String introduction = "안녕하세요 취미로 요리하는 사람입니다.";
 
         // when
-        UserProfile profile = UserProfile.of(nickname, profileImageUrl);
+        UserProfile profile = UserProfile.of(nickname, profileImageUrl, introduction);
 
         // then
         assertThat(profile.getNickname()).isEqualTo("테스트유저");
@@ -33,13 +34,28 @@ class UserProfileTest {
     void createUserProfileWithoutProfileImage() {
         // given
         String nickname = "테스트유저";
+        String introduction = "안녕하세요 취미로 요리하는 사람입니다.";
 
         // when
-        UserProfile profile = UserProfile.of(nickname, null);
+        UserProfile profile = UserProfile.of(nickname, null, introduction);
 
         // then
         assertThat(profile.getNickname()).isEqualTo("테스트유저");
         assertThat(profile.getProfileImageUrl()).isNull();
+    }
+
+    @Test
+    @DisplayName("자기소개 없이 UserProfile 객체를 생성한다")
+    void createUserProfileWithoutIntroduction() {
+        // given
+        String nickname = "테스트유저";
+        String profileImageUrl = "https://example.com/profile.jpg";
+
+        // when
+        UserProfile profile = UserProfile.of(nickname, profileImageUrl, null);
+
+        // then
+        assertThat(profile.getNickname()).isEqualTo("테스트유저");
     }
 
     @Test
@@ -49,7 +65,7 @@ class UserProfileTest {
         String nicknameWithSpaces = "  테스트유저  ";
 
         // when
-        UserProfile profile = UserProfile.of(nicknameWithSpaces, null);
+        UserProfile profile = UserProfile.of(nicknameWithSpaces, null, null);
 
         // then
         assertThat(profile.getNickname()).isEqualTo("테스트유저");
@@ -61,7 +77,7 @@ class UserProfileTest {
     @DisplayName("닉네임이 null이거나 공백이면 예외가 발생한다")
     void throwExceptionWhenNicknameIsNullOrBlank(String invalidNickname) {
         // when & then
-        assertThatThrownBy(() -> UserProfile.of(invalidNickname, null))
+        assertThatThrownBy(() -> UserProfile.of(invalidNickname, null, null))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("이름은 필수입니다.");
     }
@@ -73,7 +89,7 @@ class UserProfileTest {
         String shortNickname = "a";
 
         // when & then
-        assertThatThrownBy(() -> UserProfile.of(shortNickname, null))
+        assertThatThrownBy(() -> UserProfile.of(shortNickname, null, null))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("이름은 2-50자 사이여야 합니다.");
     }
@@ -85,7 +101,7 @@ class UserProfileTest {
         String longNickname = "a".repeat(51);
 
         // when & then
-        assertThatThrownBy(() -> UserProfile.of(longNickname, null))
+        assertThatThrownBy(() -> UserProfile.of(longNickname, null, null))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("이름은 2-50자 사이여야 합니다.");
     }
@@ -97,7 +113,7 @@ class UserProfileTest {
         String minimumNickname = "ab";
 
         // when
-        UserProfile profile = UserProfile.of(minimumNickname, null);
+        UserProfile profile = UserProfile.of(minimumNickname, null, null);
 
         // then
         assertThat(profile.getNickname()).isEqualTo("ab");
@@ -110,9 +126,24 @@ class UserProfileTest {
         String maximumNickname = "a".repeat(50);
 
         // when
-        UserProfile profile = UserProfile.of(maximumNickname, null);
+        UserProfile profile = UserProfile.of(maximumNickname, null, null);
 
         // then
         assertThat(profile.getNickname()).hasSize(50);
     }
+
+    @Test
+    @DisplayName("자기소개가 500자가 넘을 시 예외가 발생한다.")
+    void throwExceptionWhenIntroductionTooLong() {
+        // given
+        String nickName = "chef";
+        String maximumIntroduction = "a".repeat(501);
+
+        // when & then
+        assertThatThrownBy(() -> UserProfile.of(nickName, null, maximumIntroduction))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("자기소개는 500자 미만이어야 합니다.");
+    }
+
+
 }

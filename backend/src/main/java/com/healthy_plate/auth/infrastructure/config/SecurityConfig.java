@@ -42,7 +42,8 @@ public class SecurityConfig {
                     "/v3/api-docs/**",
                     "/swagger-resources/**",
                     "/oauth2/**",
-                    "/api/auth/**"
+                    "/api/auth/**",
+                    "/api/users/duplicate/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

@@ -17,12 +17,17 @@ public class UserProfile {
     @Column(name = "profile_image_url")
     private String profileImageUrl;
 
-    public static UserProfile of(String nickname, String profileImageUrl) {
-        validateName(nickname);
+    @Column(length = 500)
+    private String introduction;
 
+
+    public static UserProfile of(String nickname, String profileImageUrl, String introduction) {
+        validateName(nickname);
+        validateIntroduction(introduction);
         UserProfile profile = new UserProfile();
         profile.nickname = nickname.trim();
         profile.profileImageUrl = profileImageUrl;
+        profile.introduction = introduction;
         return profile;
     }
 
@@ -30,6 +35,7 @@ public class UserProfile {
         UserProfile profile = new UserProfile();
         profile.nickname = null;
         profile.profileImageUrl = null;
+        profile.introduction = null;
         return profile;
     }
 
@@ -48,6 +54,14 @@ public class UserProfile {
         }
         if (name.length() < 2 || name.length() > 50) {
             throw new IllegalArgumentException("이름은 2-50자 사이여야 합니다.");
+        }
+    }
+
+    private static void validateIntroduction(String introduction) {
+        if (introduction != null) {
+            if (introduction.length() > 500) {
+                throw new IllegalArgumentException("자기소개는 500자 미만이어야 합니다.");
+            }
         }
     }
 }

@@ -18,7 +18,7 @@ class UserTest {
     void createUserWithValidValues() {
         // given
         Email email = Email.of("test@example.com");
-        UserProfile profile = UserProfile.of("테스트유저", "https://example.com/profile.jpg");
+        UserProfile profile = UserProfile.of("테스트유저", "https://example.com/profile.jpg", "안녕하세요 꿈나무입니다.");
         OAuth2Provider provider = OAuth2Provider.GOOGLE;
         String providerId = "google-123456";
         UserRole role = UserRole.ROLE_USER;
@@ -39,7 +39,7 @@ class UserTest {
     void createUserWithGoogleProvider() {
         // given
         Email email = Email.of("google@example.com");
-        UserProfile profile = UserProfile.of("구글유저", null);
+        UserProfile profile = UserProfile.of("구글유저", null, "안녕하세요 꿈나무입니다.");
         OAuth2Provider provider = OAuth2Provider.GOOGLE;
         String providerId = "google-123";
 
@@ -56,7 +56,7 @@ class UserTest {
     void createUserWithKakaoProvider() {
         // given
         Email email = Email.of("kakao@example.com");
-        UserProfile profile = UserProfile.of("카카오유저", null);
+        UserProfile profile = UserProfile.of("카카오유저", null, "안녕하세요 꿈나무입니다.");
         OAuth2Provider provider = OAuth2Provider.KAKAO;
         String providerId = "kakao-456";
 
@@ -73,7 +73,7 @@ class UserTest {
     void createUserWithNaverProvider() {
         // given
         Email email = Email.of("naver@example.com");
-        UserProfile profile = UserProfile.of("네이버유저", null);
+        UserProfile profile = UserProfile.of("네이버유저", null, "안녕하세요 꿈나무입니다.");
         OAuth2Provider provider = OAuth2Provider.NAVER;
         String providerId = "naver-789";
 
@@ -90,7 +90,7 @@ class UserTest {
     void createUserWithAdminRole() {
         // given
         Email email = Email.of("admin@example.com");
-        UserProfile profile = UserProfile.of("관리자", null);
+        UserProfile profile = UserProfile.of("관리자", null, "안녕하세요 꿈나무입니다.");
 
         // when
         User user = new User(email, profile, OAuth2Provider.GOOGLE, "admin-123", UserRole.ROLE_ADMIN);

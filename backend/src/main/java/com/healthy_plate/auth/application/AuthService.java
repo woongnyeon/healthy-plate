@@ -36,6 +36,11 @@ public class AuthService {
         User user = userRepository.findById(refreshToken.getUserId())
             .orElseThrow(() -> new CustomAuthenticationException(BusinessErrorCode.USER_NOT_FOUND));
 
+        // 프로필 미등록 사용자 차단
+        if (user.isFirstLogin()) {
+            throw new CustomAuthenticationException(AuthenticationErrorCode.PROFILE_REGISTRATION_REQUIRED);
+        }
+
         return jwtTokenProvider.generateAccessToken(
             user.getId(),
             user.getEmail().getValue(),
@@ -70,6 +75,7 @@ public class AuthService {
         }
 
         user.updateNickname(nickname);
+        userRepository.save(user);
 
         return jwtTokenProvider.generateAccessToken(
             user.getId(),
