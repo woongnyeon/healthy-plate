@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: healthy-plate
+
+  profiles:
+    active: dev
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
