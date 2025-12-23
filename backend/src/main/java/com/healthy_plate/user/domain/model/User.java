@@ -57,6 +57,9 @@ public class User extends BaseEntity {
     }
 
     public void updateNickname(final String nickname) {
+        if (this.profile == null) {
+            this.profile = UserProfile.createEmpty();
+        }
         this.profile.updateNickname(nickname);
     }
 

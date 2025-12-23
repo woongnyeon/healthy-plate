@@ -69,13 +69,8 @@ public class AuthService {
     @Transactional
     public String registerNickname(final String refreshTokenValue, final String nickname) {
         User user = getUserFromRefreshToken(refreshTokenValue);
-
-        if (!user.isFirstLogin()) {
-            throw new CustomAuthenticationException(AuthenticationErrorCode.ALREADY_REGISTERED_NICKNAME);
-        }
-
         user.updateNickname(nickname);
-        userRepository.save(user);
+//        userRepository.save(user);
 
         return jwtTokenProvider.generateAccessToken(
             user.getId(),
