@@ -9,7 +9,7 @@ public class OAuth2UserInfoFactory {
         return switch (provider) {
             case GOOGLE -> new GoogleOAuth2UserInfo(attributes);
             case KAKAO -> new KakaoOAuth2UserInfo(attributes);
-            case NAVER -> throw new IllegalArgumentException("미설정 Oauth 입니다.");
+            case NAVER -> new NaverOAuth2UserInfo(attributes);
         };
     }
 }
