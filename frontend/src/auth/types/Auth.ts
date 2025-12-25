@@ -1,14 +1,19 @@
 export interface LoginResponse {
   accessToken: string;
-  user: userInfo;
+  user: UserInfo;
 }
 
-export interface userInfo {
+export interface UserInfo {
   id: number;
   email: string;
+  profile: Profile;
+  provider: string;
+}
+
+export interface Profile {
+  introduction: string;
   nickname: string;
   profileImageUrl: string;
-  provider: string;
 }
 
 export interface SignUpRequest {

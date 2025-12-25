@@ -1,6 +1,6 @@
 import { useApi } from "react-easy-api";
 import {
-  type userInfo,
+  type UserInfo,
   type LoginResponse,
   type SignUpRequest,
   type SignUpResponse,
@@ -42,7 +42,7 @@ export const useAuthApi = () => {
     execute: userInfoApi,
     loading: isGetUserInfo,
     error: getUserInfoError,
-  } = useApi<userInfo, void>({
+  } = useApi<UserInfo, void>({
     endpoint: "/users",
     method: "GET",
     axiosInstance: axiosClient,
