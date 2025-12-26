@@ -1,13 +1,12 @@
 package com.healthy_plate.auth.presentation;
 
 import com.healthy_plate.auth.presentation.dto.TokenResponse;
-import com.healthy_plate.auth.presentation.dto.UpdateUserProfileRequest;
+import com.healthy_plate.auth.presentation.dto.RegisterUserProfileRequest;
 import com.healthy_plate.shared.error.ErrorResponse;
 import com.healthy_plate.shared.s3.PresignedUrlResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -121,7 +120,7 @@ public interface SwaggerAuthController {
         }
     )
     ResponseEntity<TokenResponse> registerUserInfo(
-        UpdateUserProfileRequest request,
+        RegisterUserProfileRequest request,
         HttpServletRequest httpRequest
     );
 

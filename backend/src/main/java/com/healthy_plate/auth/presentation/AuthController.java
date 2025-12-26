@@ -4,7 +4,7 @@ import com.healthy_plate.auth.application.AuthService;
 import com.healthy_plate.auth.domain.model.JwtProperties;
 import com.healthy_plate.auth.infrastructure.util.CookieUtil;
 import com.healthy_plate.auth.presentation.dto.TokenResponse;
-import com.healthy_plate.auth.presentation.dto.UpdateUserProfileRequest;
+import com.healthy_plate.auth.presentation.dto.RegisterUserProfileRequest;
 import com.healthy_plate.shared.s3.PresignedUrlResponse;
 import com.healthy_plate.shared.s3.S3FileUploadService;
 import com.healthy_plate.user.domain.model.User;
@@ -58,7 +58,7 @@ public class AuthController implements SwaggerAuthController {
 
     @PatchMapping("/register")
     public ResponseEntity<TokenResponse> registerUserInfo(
-        @RequestBody final UpdateUserProfileRequest request,
+        @RequestBody final RegisterUserProfileRequest request,
         final HttpServletRequest httpRequest
     ) {
         String refreshToken = CookieUtil.findRefreshTokenWithCookie(httpRequest.getCookies());
