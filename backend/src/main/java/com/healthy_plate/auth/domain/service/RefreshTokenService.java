@@ -18,8 +18,8 @@ public class RefreshTokenService {
         refreshTokenRepository.findByUserId(userId)
             .ifPresent(existing -> refreshTokenRepository.deleteByToken(existing.getToken()));
 
-        LocalDateTime expiryDate = LocalDateTime.now().plusSeconds(refreshTokenExpiration / 1000);
-        RefreshToken refreshToken = new RefreshToken(token, userId, expiryDate);
+        final LocalDateTime expiryDate = LocalDateTime.now().plusSeconds(refreshTokenExpiration / 1000);
+        final RefreshToken refreshToken = new RefreshToken(token, userId, expiryDate);
         refreshTokenRepository.save(refreshToken);
     }
 }

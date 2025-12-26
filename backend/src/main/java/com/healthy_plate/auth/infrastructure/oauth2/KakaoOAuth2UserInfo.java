@@ -13,7 +13,7 @@ public class KakaoOAuth2UserInfo implements OAuth2UserInfo {
         this.attributes = attributes;
         Object kakaoAccountObj = attributes.get("kakao_account");
         if (kakaoAccountObj == null) {
-            throw new IllegalArgumentException("Kakao account object is missing in Kakao OAuth2 attributes");
+            throw new IllegalArgumentException("Kakao account object가 카카오 Oauth 응답에 존재하지 않습니다.");
         }
         this.kakaoAccount = extractMap(kakaoAccountObj);
     }
@@ -27,7 +27,7 @@ public class KakaoOAuth2UserInfo implements OAuth2UserInfo {
     public String getProviderId() {
         Object id = attributes.get("id");
         if (id == null) {
-            throw new IllegalArgumentException("Provider ID is missing in Kakao OAuth2 response");
+            throw new IllegalArgumentException("Provider ID가 카카오 Oauth 응답에 존재하지 않습니다.");
         }
         return id.toString();
     }
@@ -36,17 +36,17 @@ public class KakaoOAuth2UserInfo implements OAuth2UserInfo {
     public String getEmail() {
         Object email = kakaoAccount.get("email");
         if (email == null) {
-            throw new IllegalArgumentException("Email is missing in Kakao OAuth2 response");
+            throw new IllegalArgumentException("Email이 카카오 Oauth 응답에 존재하지 않습니다.");
         }
         return email.toString();
     }
 
     @SuppressWarnings("unchecked")
-    private Map<String, Object> extractMap(Object obj) {
+    private Map<String, Object> extractMap(final Object obj) {
         if (obj instanceof Map) {
             return (Map<String, Object>) obj;
         } else {
-            throw new IllegalArgumentException("Invalid kakao_account structure in Kakao OAuth2 response");
+            throw new IllegalArgumentException("Invalid kakao_account structure가 카카오 Oauth 응답에 존재하지 않습니다.");
         }
     }
 }

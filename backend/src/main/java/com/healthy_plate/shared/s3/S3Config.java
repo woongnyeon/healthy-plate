@@ -9,7 +9,7 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 public class S3Config {
 
     @Bean
-    public S3Presigner s3Presigner(S3Client s3Client) {
+    public S3Presigner s3Presigner(final S3Client s3Client) {
         return S3Presigner.builder()
             .region(s3Client.serviceClientConfiguration().region())
             .credentialsProvider(s3Client.serviceClientConfiguration().credentialsProvider())

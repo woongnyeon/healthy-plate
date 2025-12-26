@@ -2,16 +2,16 @@ package com.healthy_plate.auth.infrastructure.oauth2;
 
 import java.util.Map;
 
-public class NaverOAuth2UserInfo implements OAuth2UserInfo{
+public class NaverOAuth2UserInfo implements OAuth2UserInfo {
 
     private static final String PROVIDER = "naver";
 
     private final Map<String, Object> response;
 
-    public NaverOAuth2UserInfo(Map<String, Object> attributes) {
+    public NaverOAuth2UserInfo(final Map<String, Object> attributes) {
         Object responseObj = attributes.get("response");
         if (responseObj == null) {
-            throw new IllegalArgumentException("Response object is missing in Naver OAuth2 attributes");
+            throw new IllegalArgumentException("Response object가 네이버 Oauth 응답에 존재하지 않습니다.");
         }
         this.response = extractMap(responseObj);
     }
@@ -25,7 +25,7 @@ public class NaverOAuth2UserInfo implements OAuth2UserInfo{
     public String getProviderId() {
         Object id = response.get("id");
         if (id == null) {
-            throw new IllegalArgumentException("Provider ID is missing in Naver OAuth2 response");
+            throw new IllegalArgumentException("Provider ID가 네이버 Oauth 응답에 존재하지 않습니다.");
         }
         return id.toString();
     }
@@ -34,17 +34,17 @@ public class NaverOAuth2UserInfo implements OAuth2UserInfo{
     public String getEmail() {
         Object email = response.get("email");
         if (email == null) {
-            throw new IllegalArgumentException("Email is missing in Naver OAuth2 response");
+            throw new IllegalArgumentException("Email이 네이버 Oauth 응답에 존재하지 않습니다.");
         }
         return email.toString();
     }
 
     @SuppressWarnings("unchecked")
-    private Map<String, Object> extractMap(Object obj) {
+    private Map<String, Object> extractMap(final Object obj) {
         if (obj instanceof Map) {
             return (Map<String, Object>) obj;
         } else {
-            throw new IllegalArgumentException("Invalid response structure in Naver OAuth2 response");
+            throw new IllegalArgumentException("Invalid response structure가 네이버 Oauth 응답에 존재하지 않습니다.");
         }
     }
 }

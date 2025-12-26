@@ -25,15 +25,14 @@ public class AuthService {
         if (!jwtTokenProvider.validateToken(refreshTokenValue)) {
             throw new CustomAuthenticationException(AuthenticationErrorCode.INVALID_REFRESH_TOKEN);
         }
-
-        RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenValue)
+        final RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenValue)
             .orElseThrow(() -> new CustomAuthenticationException(AuthenticationErrorCode.REFRESH_TOKEN_NOT_FOUND));
 
         if (refreshToken.isExpired()) {
             refreshTokenRepository.deleteByToken(refreshTokenValue);
             throw new CustomAuthenticationException(AuthenticationErrorCode.EXPIRED_REFRESH_TOKEN);
         }
-        User user = userRepository.findById(refreshToken.getUserId())
+        final User user = userRepository.findById(refreshToken.getUserId())
             .orElseThrow(() -> new CustomAuthenticationException(BusinessErrorCode.USER_NOT_FOUND));
 
         // 프로필 미등록 사용자 차단
@@ -54,7 +53,7 @@ public class AuthService {
             throw new CustomAuthenticationException(AuthenticationErrorCode.INVALID_REFRESH_TOKEN);
         }
 
-        RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenValue)
+        final RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenValue)
             .orElseThrow(() -> new CustomAuthenticationException(AuthenticationErrorCode.REFRESH_TOKEN_NOT_FOUND));
 
         if (refreshToken.isExpired()) {
@@ -73,7 +72,7 @@ public class AuthService {
         final String profileImageUrl,
         final String introduction
     ) {
-        User user = getUserFromRefreshToken(refreshTokenValue);
+        final User user = getUserFromRefreshToken(refreshTokenValue);
 
         user.updateProfile(nickname, profileImageUrl, introduction);
         userRepository.save(user);
@@ -86,7 +85,7 @@ public class AuthService {
     }
 
     @Transactional
-    public void logout(String refreshTokenValue) {
+    public void logout(final String refreshTokenValue) {
         refreshTokenRepository.deleteByToken(refreshTokenValue);
     }
 }

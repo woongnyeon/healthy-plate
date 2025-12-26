@@ -45,7 +45,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
 
-        ErrorResponse errorResponse = new ErrorResponse(
+        final ErrorResponse errorResponse = new ErrorResponse(
             401,
             errorCode,
             request.getMethod(),

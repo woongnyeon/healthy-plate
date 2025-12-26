@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class OAuth2UserInfoFactory {
 
-    public static OAuth2UserInfo getOAuth2UserInfo(OAuth2Provider provider, Map<String, Object> attributes) {
+    public static OAuth2UserInfo getOAuth2UserInfo(final OAuth2Provider provider, final Map<String, Object> attributes) {
         return switch (provider) {
             case GOOGLE -> new GoogleOAuth2UserInfo(attributes);
             case KAKAO -> new KakaoOAuth2UserInfo(attributes);
