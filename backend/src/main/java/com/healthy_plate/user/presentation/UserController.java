@@ -1,19 +1,23 @@
 package com.healthy_plate.user.presentation;
 
+import com.healthy_plate.auth.infrastructure.util.CookieUtil;
+import com.healthy_plate.shared.s3.PresignedUrlResponse;
+import com.healthy_plate.shared.s3.S3FileUploadService;
 import com.healthy_plate.user.application.UserService;
 import com.healthy_plate.user.domain.model.User;
+import com.healthy_plate.user.presentation.dto.UpdateProfileRequest;
 import com.healthy_plate.user.presentation.dto.UserResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController implements SwaggerUserController {
 
     private final UserService userService;
+    private final S3FileUploadService s3FileUploadService;
 
     @GetMapping
     public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal final Long userId) {
@@ -33,15 +38,28 @@ public class UserController implements SwaggerUserController {
         final boolean duplicated = userService.isDuplicatedNickname(nickname);
         return ResponseEntity.ok(duplicated);
     }
+    
+    //로그인 후
+    @PostMapping("/profile-image/presigned-url")
+    public ResponseEntity<PresignedUrlResponse> getPresignedUrl(
+        @AuthenticationPrincipal final Long userId
+    ) {
+        return ResponseEntity.ok(
+            s3FileUploadService.getPreSignedUrl(String.valueOf(userId))
+        );
+    }
 
-    @PatchMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping("/profile")
     public ResponseEntity<UserResponse> updateProfile(
         @AuthenticationPrincipal final Long userId,
-        @RequestPart(value = "nickname", required = false) final String nickname,
-        @RequestPart(value = "profileImage", required = false) final MultipartFile profileImage,
-        @RequestPart(value = "introduction", required = false) final String introduction
+        @RequestBody final UpdateProfileRequest request
     ) {
-        final User updatedUser = userService.updateUserProfile(userId, nickname, profileImage, introduction);
+        final User updatedUser = userService.updateUserProfile(
+            userId,
+            request.nickname(),
+            request.profileImageUrl(),
+            request.introduction()
+        );
         return ResponseEntity.ok(UserResponse.from(updatedUser));
     }
 }

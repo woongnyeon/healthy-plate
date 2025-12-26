@@ -6,13 +6,11 @@ import com.healthy_plate.auth.domain.repository.RefreshTokenRepository;
 import com.healthy_plate.shared.error.exception.AuthenticationErrorCode;
 import com.healthy_plate.shared.error.exception.BusinessErrorCode;
 import com.healthy_plate.shared.error.exception.CustomAuthenticationException;
-import com.healthy_plate.shared.s3.S3FileUploadService;
 import com.healthy_plate.user.domain.model.User;
 import com.healthy_plate.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +19,6 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
-    private final S3FileUploadService s3FileUploadService;
 
     @Transactional
     public String generateAccessToken(final String refreshTokenValue) {
@@ -73,15 +70,10 @@ public class AuthService {
     public String registerUserInfo(
         final String refreshTokenValue,
         final String nickname,
-        final MultipartFile profileImage,
+        final String profileImageUrl,
         final String introduction
     ) {
         User user = getUserFromRefreshToken(refreshTokenValue);
-
-        String profileImageUrl = null;
-        if (profileImage != null && !profileImage.isEmpty()) {
-            profileImageUrl = s3FileUploadService.uploadProfileImage(profileImage, user.getId());
-        }
 
         user.updateProfile(nickname, profileImageUrl, introduction);
         userRepository.save(user);

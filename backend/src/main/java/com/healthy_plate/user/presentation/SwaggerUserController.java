@@ -1,9 +1,10 @@
 package com.healthy_plate.user.presentation;
 
 import com.healthy_plate.shared.error.ErrorResponse;
+import com.healthy_plate.shared.s3.PresignedUrlResponse;
+import com.healthy_plate.user.presentation.dto.UpdateProfileRequest;
 import com.healthy_plate.user.presentation.dto.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,7 +13,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "사용자", description = "사용자 관련 API")
 public interface SwaggerUserController {
@@ -63,8 +63,49 @@ public interface SwaggerUserController {
     ResponseEntity<Boolean> isDuplicatedNickname(@PathVariable String nickname);
 
     @Operation(
+        summary = "프로필 이미지 업로드 URL 생성 (프로필 수정용)",
+        description = """
+            프로필 수정 시 이미지를 업로드하기 위한 Presigned URL을 생성합니다.
+
+            **사용 순서:**
+            1. 이 API를 호출하여 presignedUrl과 fileUrl을 받습니다
+            2. presignedUrl로 이미지를 S3에 직접 PUT 업로드합니다
+            3. PATCH /api/users/profile 호출 시 fileUrl을 profileImageUrl에 포함합니다
+
+            **인증:** Bearer accessToken 필요 (로그인 후)
+            """,
+        security = @SecurityRequirement(name = "Bearer Authentication"),
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Presigned URL 생성 성공",
+                content = @Content(
+                    schema = @Schema(implementation = PresignedUrlResponse.class)
+                )
+            ),
+            @ApiResponse(
+                responseCode = "401",
+                description = "인증 실패 (유효하지 않은 토큰)",
+                content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class)
+                )
+            )
+        }
+    )
+    ResponseEntity<PresignedUrlResponse> getPresignedUrl(@AuthenticationPrincipal Long userId);
+
+    @Operation(
         summary = "프로필 업데이트",
-        description = "사용자의 프로필 정보(닉네임, 프로필 이미지, 자기소개)를 업데이트합니다. 모든 필드는 선택적이며, 전송되지 않은 필드는 기존 값이 유지됩니다.",
+        description = """
+            사용자의 프로필 정보를 업데이트합니다.
+
+            **이미지 업로드 방법:**
+            1. POST /api/users/profile-image/presigned-url로 업로드 URL 받기
+            2. 받은 presignedUrl로 이미지를 S3에 직접 PUT 업로드
+            3. 이 API 호출 시 fileUrl을 profileImageUrl에 포함
+
+            **모든 필드 선택:** 전송되지 않은 필드는 기존 값이 유지됩니다.
+            """,
         security = @SecurityRequirement(name = "Bearer Authentication"),
         responses = {
             @ApiResponse(
@@ -99,8 +140,6 @@ public interface SwaggerUserController {
     )
     ResponseEntity<UserResponse> updateProfile(
         @AuthenticationPrincipal Long userId,
-        @Parameter(description = "닉네임 (2-50자)", example = "건강한식단") String nickname,
-        @Parameter(description = "프로필 이미지 파일 (jpg, jpeg, png, gif / 최대 5MB)") MultipartFile profileImage,
-        @Parameter(description = "자기소개 (최대 500자)", example = "건강한 식단을 추구합니다!") String introduction
+        UpdateProfileRequest request
     );
 }

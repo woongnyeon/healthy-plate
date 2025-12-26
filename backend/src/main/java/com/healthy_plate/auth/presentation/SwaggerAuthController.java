@@ -1,18 +1,19 @@
 package com.healthy_plate.auth.presentation;
 
 import com.healthy_plate.auth.presentation.dto.TokenResponse;
+import com.healthy_plate.auth.presentation.dto.UpdateUserProfileRequest;
 import com.healthy_plate.shared.error.ErrorResponse;
+import com.healthy_plate.shared.s3.PresignedUrlResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "인증", description = "인증 관련 API")
 public interface SwaggerAuthController {
@@ -47,11 +48,54 @@ public interface SwaggerAuthController {
     )
     ResponseEntity<TokenResponse> getAccessToken(HttpServletRequest request);
 
+    @Operation(
+        summary = "프로필 이미지 업로드 URL 생성 (회원가입용)",
+        tags = "인증",
+        description = """
+            회원가입 시 프로필 이미지를 업로드하기 위한 Presigned URL을 생성합니다.
+
+            **사용 순서:**
+            1. 이 API를 호출하여 presignedUrl과 fileUrl을 받습니다
+            2. presignedUrl로 이미지를 S3에 직접 PUT 업로드합니다
+            3. PATCH /api/auth/register 호출 시 fileUrl을 profileImageUrl에 포함합니다
+
+            **인증:** refresh_token 쿠키 사용 (회원가입 전이므로 accessToken 없음)
+            """,
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Presigned URL 생성 성공",
+                content = @Content(
+                    schema = @Schema(implementation = PresignedUrlResponse.class)
+                )
+            ),
+            @ApiResponse(
+                responseCode = "401",
+                description = "유효하지 않은 리프레시 토큰",
+                content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class)
+                )
+            )
+        }
+    )
+    ResponseEntity<PresignedUrlResponse> getPresignedUrl(HttpServletRequest httpRequest);
 
     @Operation(
         summary = "프로필 등록 (회원가입 완료)",
         tags = "인증",
-        description = "OAuth2 로그인 후 사용자의 프로필(닉네임, 프로필 이미지, 자기소개)을 등록하고 액세스 토큰을 반환합니다. 닉네임은 필수이며, 프로필 이미지와 자기소개는 선택사항입니다.",
+        description = """
+            OAuth2 로그인 후 사용자의 프로필을 등록하고 액세스 토큰을 반환합니다.
+
+            **이미지 업로드 방법:**
+            1. POST /api/auth/profile-image/presigned-url로 업로드 URL 받기
+            2. 받은 presignedUrl로 이미지를 S3에 직접 PUT 업로드
+            3. 이 API 호출 시 fileUrl을 profileImageUrl에 포함
+
+            **필수:** nickname (2-50자)
+            **선택:** profileImageUrl (S3 URL), introduction (최대 500자)
+
+            **인증:** refresh_token 쿠키 사용
+            """,
         responses = {
             @ApiResponse(
                 responseCode = "200",
@@ -77,9 +121,7 @@ public interface SwaggerAuthController {
         }
     )
     ResponseEntity<TokenResponse> registerUserInfo(
-        @Parameter(description = "닉네임 (필수, 2-50자)", required = true, example = "건강한식단") String nickname,
-        @Parameter(description = "프로필 이미지 파일 (선택, jpg, jpeg, png, gif / 최대 5MB)") MultipartFile profileImage,
-        @Parameter(description = "자기소개 (선택, 최대 500자)", example = "건강한 식단을 추구합니다!") String introduction,
+        UpdateUserProfileRequest request,
         HttpServletRequest httpRequest
     );
 

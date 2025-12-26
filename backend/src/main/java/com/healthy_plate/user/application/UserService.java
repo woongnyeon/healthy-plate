@@ -8,7 +8,6 @@ import com.healthy_plate.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +32,7 @@ public class UserService {
     public User updateUserProfile(
         final Long userId,
         final String nickname,
-        final MultipartFile profileImage,
+        final String profileImageUrl,
         final String introduction
     ) {
         User user = findUser(userId);
@@ -46,16 +45,11 @@ public class UserService {
         // 업데이트할 값 결정 (null이면 기존 값 유지)
         String newNickname = nickname != null ? nickname : currentNickname;
         String newIntroduction = introduction != null ? introduction : currentIntroduction;
-        String newProfileImageUrl = currentProfileImageUrl;
+        String newProfileImageUrl = profileImageUrl != null ? profileImageUrl : currentProfileImageUrl;
 
-        // 새로운 프로필 이미지가 있으면 업로드
-        if (profileImage != null && !profileImage.isEmpty()) {
-            // 기존 이미지가 있으면 삭제
-            if (currentProfileImageUrl != null) {
-                s3FileUploadService.deleteFile(currentProfileImageUrl);
-            }
-            // 새 이미지 업로드
-            newProfileImageUrl = s3FileUploadService.uploadProfileImage(profileImage, userId);
+        // 새로운 프로필 이미지 URL이 제공되고 기존 URL과 다르면 기존 이미지 삭제
+        if (profileImageUrl != null && currentProfileImageUrl != null && !profileImageUrl.equals(currentProfileImageUrl)) {
+            s3FileUploadService.deleteFile(currentProfileImageUrl);
         }
 
         // 프로필 업데이트
