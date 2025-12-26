@@ -36,7 +36,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     //aws S3
-    implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.3.0")
+    implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.4.0")
     implementation "io.awspring.cloud:spring-cloud-aws-starter-s3"
     implementation "software.amazon.awssdk:s3"
 
