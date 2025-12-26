@@ -11,6 +11,7 @@ import com.healthy_plate.user.domain.model.User;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -58,7 +59,7 @@ public class AuthController implements SwaggerAuthController {
 
     @PatchMapping("/register")
     public ResponseEntity<TokenResponse> registerUserInfo(
-        @RequestBody final RegisterUserProfileRequest request,
+        @Valid @RequestBody final RegisterUserProfileRequest request,
         final HttpServletRequest httpRequest
     ) {
         final String refreshToken = CookieUtil.findRefreshTokenWithCookie(httpRequest.getCookies());

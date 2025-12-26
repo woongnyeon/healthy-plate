@@ -1,13 +1,12 @@
 package com.healthy_plate.user.presentation;
 
-import com.healthy_plate.auth.infrastructure.util.CookieUtil;
 import com.healthy_plate.shared.s3.PresignedUrlResponse;
 import com.healthy_plate.shared.s3.S3FileUploadService;
 import com.healthy_plate.user.application.UserService;
 import com.healthy_plate.user.domain.model.User;
 import com.healthy_plate.user.presentation.dto.UpdateProfileRequest;
 import com.healthy_plate.user.presentation.dto.UserResponse;
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -38,8 +37,7 @@ public class UserController implements SwaggerUserController {
         final boolean duplicated = userService.isDuplicatedNickname(nickname);
         return ResponseEntity.ok(duplicated);
     }
-    
-    //로그인 후
+
     @PostMapping("/profile-image/presigned-url")
     public ResponseEntity<PresignedUrlResponse> getPresignedUrl(
         @AuthenticationPrincipal final Long userId
@@ -52,7 +50,7 @@ public class UserController implements SwaggerUserController {
     @PatchMapping("/profile")
     public ResponseEntity<UserResponse> updateProfile(
         @AuthenticationPrincipal final Long userId,
-        @RequestBody final UpdateProfileRequest request
+        @Valid @RequestBody final UpdateProfileRequest request
     ) {
         final User updatedUser = userService.updateUserProfile(
             userId,
