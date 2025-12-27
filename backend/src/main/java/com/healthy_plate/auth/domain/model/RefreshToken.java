@@ -29,7 +29,7 @@ public class RefreshToken extends BaseEntity {
     @Column(nullable = false)
     private LocalDateTime expiryDate;
 
-    public RefreshToken(String token, Long userId, LocalDateTime expiryDate) {
+    public RefreshToken(final String token, final Long userId, final LocalDateTime expiryDate) {
         this.token = token;
         this.userId = userId;
         this.expiryDate = expiryDate;

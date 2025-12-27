@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
     ) {
         log.warn("Authentication Exception - URI '{} {}' ", request.getMethod(), request.getRequestURI(), e);
         final HttpStatus httpStatus = e.getErrorCode().getStatus();
-        ErrorResponse errorResponse = new ErrorResponse(
+        final ErrorResponse errorResponse = new ErrorResponse(
             httpStatus.value(),
             e.getErrorCode(),
             request.getMethod(),
@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
     ) {
         log.warn("Business Exception - URI '{} {}' ", request.getMethod(), request.getRequestURI(), e);
         final HttpStatus httpStatus = e.getErrorCode().getStatus();
-        ErrorResponse errorResponse = new ErrorResponse(
+        final ErrorResponse errorResponse = new ErrorResponse(
             httpStatus.value(),
             e.getErrorCode(),
             request.getMethod(),
@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
         log.warn("Illegal Argument Exception - URI '{} {}', 메시지: {}",
             request.getMethod(), request.getRequestURI(), e.getMessage());
         final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-        ErrorResponse errorResponse = new ErrorResponse(
+        final ErrorResponse errorResponse = new ErrorResponse(
             httpStatus.value(),
             "BAD_REQUEST",
             e.getMessage(),

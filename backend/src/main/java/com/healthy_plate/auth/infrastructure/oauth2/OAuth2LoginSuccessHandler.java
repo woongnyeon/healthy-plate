@@ -69,7 +69,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         final HttpServletResponse response,
         final String refreshToken
     ) {
-        Cookie refreshTokenCookie = CookieUtil.createCookie(
+        final Cookie refreshTokenCookie = CookieUtil.createCookie(
             REFRESH_TOKEN_NAME,
             refreshToken,
             (int) (jwtProperties.refreshTokenExpiration() / 1000),

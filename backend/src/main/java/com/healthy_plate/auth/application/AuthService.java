@@ -3,7 +3,6 @@ package com.healthy_plate.auth.application;
 import com.healthy_plate.auth.domain.model.JwtTokenProvider;
 import com.healthy_plate.auth.domain.model.RefreshToken;
 import com.healthy_plate.auth.domain.repository.RefreshTokenRepository;
-import com.healthy_plate.auth.presentation.dto.UpdateUserProfileRequest;
 import com.healthy_plate.shared.error.exception.AuthenticationErrorCode;
 import com.healthy_plate.shared.error.exception.BusinessErrorCode;
 import com.healthy_plate.shared.error.exception.CustomAuthenticationException;
@@ -26,15 +25,14 @@ public class AuthService {
         if (!jwtTokenProvider.validateToken(refreshTokenValue)) {
             throw new CustomAuthenticationException(AuthenticationErrorCode.INVALID_REFRESH_TOKEN);
         }
-
-        RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenValue)
+        final RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenValue)
             .orElseThrow(() -> new CustomAuthenticationException(AuthenticationErrorCode.REFRESH_TOKEN_NOT_FOUND));
 
         if (refreshToken.isExpired()) {
             refreshTokenRepository.deleteByToken(refreshTokenValue);
             throw new CustomAuthenticationException(AuthenticationErrorCode.EXPIRED_REFRESH_TOKEN);
         }
-        User user = userRepository.findById(refreshToken.getUserId())
+        final User user = userRepository.findById(refreshToken.getUserId())
             .orElseThrow(() -> new CustomAuthenticationException(BusinessErrorCode.USER_NOT_FOUND));
 
         // 프로필 미등록 사용자 차단
@@ -55,7 +53,7 @@ public class AuthService {
             throw new CustomAuthenticationException(AuthenticationErrorCode.INVALID_REFRESH_TOKEN);
         }
 
-        RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenValue)
+        final RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenValue)
             .orElseThrow(() -> new CustomAuthenticationException(AuthenticationErrorCode.REFRESH_TOKEN_NOT_FOUND));
 
         if (refreshToken.isExpired()) {
@@ -68,9 +66,15 @@ public class AuthService {
     }
 
     @Transactional
-    public String registerNickname(final String refreshTokenValue, final UpdateUserProfileRequest request) {
-        User user = getUserFromRefreshToken(refreshTokenValue);
-        user.updateProfile(request.nickname(),request.profileImageUrl(),request.introduction());
+    public String registerUserInfo(
+        final String refreshTokenValue,
+        final String nickname,
+        final String profileImageUrl,
+        final String introduction
+    ) {
+        final User user = getUserFromRefreshToken(refreshTokenValue);
+
+        user.updateProfile(nickname, profileImageUrl, introduction);
         userRepository.save(user);
 
         return jwtTokenProvider.generateAccessToken(
@@ -81,7 +85,7 @@ public class AuthService {
     }
 
     @Transactional
-    public void logout(String refreshTokenValue) {
+    public void logout(final String refreshTokenValue) {
         refreshTokenRepository.deleteByToken(refreshTokenValue);
     }
 }

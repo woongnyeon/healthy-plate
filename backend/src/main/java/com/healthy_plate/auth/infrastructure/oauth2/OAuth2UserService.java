@@ -20,15 +20,15 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
 
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oAuth2User = super.loadUser(userRequest);
+    public OAuth2User loadUser(final OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        final OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        OAuth2Provider provider = OAuth2Provider.valueOf(registrationId.toUpperCase());
+        final String registrationId = userRequest.getClientRegistration().getRegistrationId();
+        final OAuth2Provider provider = OAuth2Provider.valueOf(registrationId.toUpperCase());
 
-        OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(provider, oAuth2User.getAttributes());
+        final OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(provider, oAuth2User.getAttributes());
 
-        User user = userRepository.findByProviderAndProviderId(provider, userInfo.getProviderId())
+        final User user = userRepository.findByProviderAndProviderId(provider, userInfo.getProviderId())
             .orElseGet(() -> createUser(provider, userInfo));
 
         return new CustomOAuth2User(
@@ -39,10 +39,10 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         );
     }
 
-    private User createUser(OAuth2Provider provider, OAuth2UserInfo userInfo) {
-        Email email = Email.of(userInfo.getEmail());
-        UserProfile profile = UserProfile.createEmpty();
-        User user = new User(
+    private User createUser(final OAuth2Provider provider, final OAuth2UserInfo userInfo) {
+        final Email email = Email.of(userInfo.getEmail());
+        final UserProfile profile = UserProfile.createEmpty();
+        final User user = new User(
             email,
             profile,
             provider,

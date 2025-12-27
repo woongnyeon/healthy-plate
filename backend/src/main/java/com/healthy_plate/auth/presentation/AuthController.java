@@ -3,8 +3,13 @@ package com.healthy_plate.auth.presentation;
 import com.healthy_plate.auth.application.AuthService;
 import com.healthy_plate.auth.domain.model.JwtProperties;
 import com.healthy_plate.auth.infrastructure.util.CookieUtil;
+import com.healthy_plate.auth.presentation.dto.RegisterUserProfileRequest;
 import com.healthy_plate.auth.presentation.dto.TokenResponse;
-import com.healthy_plate.auth.presentation.dto.UpdateUserProfileRequest;
+import com.healthy_plate.shared.s3.AllowedImageType;
+import com.healthy_plate.shared.s3.PresignedUrlRequest;
+import com.healthy_plate.shared.s3.PresignedUrlResponse;
+import com.healthy_plate.shared.s3.S3FileUploadService;
+import com.healthy_plate.user.domain.model.User;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,6 +33,7 @@ public class AuthController implements SwaggerAuthController {
 
     private final AuthService authService;
     private final JwtProperties jwtProperties;
+    private final S3FileUploadService s3FileUploadService;
 
     @Value("${app.cookie.secure}")
     private boolean cookieSecure;
@@ -36,20 +42,42 @@ public class AuthController implements SwaggerAuthController {
     public ResponseEntity<TokenResponse> getAccessToken(
         final HttpServletRequest request
     ) {
-        String refreshToken = CookieUtil.findRefreshTokenWithCookie(request.getCookies());
-        String newAccessToken = authService.generateAccessToken(refreshToken);
+        final String refreshToken = CookieUtil.findRefreshTokenWithCookie(request.getCookies());
+        final String newAccessToken = authService.generateAccessToken(refreshToken);
 
         return ResponseEntity.ok(new TokenResponse(newAccessToken));
     }
 
-
-    @PatchMapping("/register")
-    public ResponseEntity<TokenResponse> registerNickname(
-        @Valid @RequestBody final UpdateUserProfileRequest request,
+    //회원가입 용
+    @PostMapping("/profile-image/presigned-url")
+    public ResponseEntity<PresignedUrlResponse> getPresignedUrl(
+        @Valid @RequestBody final PresignedUrlRequest request,
         final HttpServletRequest httpRequest
     ) {
-        String refreshToken = CookieUtil.findRefreshTokenWithCookie(httpRequest.getCookies());
-        String accessToken = authService.registerNickname(refreshToken, request);
+        final String refreshToken = CookieUtil.findRefreshTokenWithCookie(httpRequest.getCookies());
+        final User user = authService.getUserFromRefreshToken(refreshToken);
+
+        final PresignedUrlResponse response = s3FileUploadService.getPreSignedUrl(
+            String.valueOf(user.getId()),
+            AllowedImageType.fromContentType(request.contentType()),
+            request.fileSize()
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/register")
+    public ResponseEntity<TokenResponse> registerUserInfo(
+        @Valid @RequestBody final RegisterUserProfileRequest request,
+        final HttpServletRequest httpRequest
+    ) {
+        final String refreshToken = CookieUtil.findRefreshTokenWithCookie(httpRequest.getCookies());
+        final String accessToken = authService.registerUserInfo(
+            refreshToken,
+            request.nickname(),
+            request.profileImageUrl(),
+            request.introduction()
+        );
 
         return ResponseEntity.ok(new TokenResponse(accessToken));
     }
@@ -61,7 +89,7 @@ public class AuthController implements SwaggerAuthController {
     ) {
         authService.logout(refreshToken);
 
-        Cookie refreshTokenCookie = CookieUtil.deleteCookie(REFRESH_TOKEN_NAME);
+        final Cookie refreshTokenCookie = CookieUtil.deleteCookie(REFRESH_TOKEN_NAME);
         response.addCookie(refreshTokenCookie);
 
         return ResponseEntity.ok().build();

@@ -11,7 +11,5 @@ public interface RefreshTokenRepository {
 
     Optional<RefreshToken> findByUserId(Long userId);
 
-    void deleteByUserId(Long userId);
-
     void deleteByToken(String token);
 }
