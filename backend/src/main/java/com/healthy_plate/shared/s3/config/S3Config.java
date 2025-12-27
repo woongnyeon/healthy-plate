@@ -1,4 +1,4 @@
-package com.healthy_plate.shared.s3;
+package com.healthy_plate.shared.s3.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
