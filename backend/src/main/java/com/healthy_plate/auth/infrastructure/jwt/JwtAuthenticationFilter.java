@@ -45,7 +45,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             final String jwt = getJwtFromRequest(request);
 
             if (StringUtils.hasText(jwt)) {
-                // 토큰이 있으면 검증
                 final Long userId = jwtTokenProvider.getUserIdFromToken(jwt);
                 final UserRole role = jwtTokenProvider.getRoleFromToken(jwt);
 
@@ -59,8 +58,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 log.debug("JWT 인증 성공 - userId: {}, role: {}", userId, role);
             }
-            // 토큰이 없으면 인증 없이 진행 (public 엔드포인트를 위해)
-
         } catch (ExpiredJwtException e) {
             log.warn("만료된 액세스 토큰 - URI: {} {}", request.getMethod(), request.getRequestURI());
             request.setAttribute(JWT_ERROR_CODE_ATTRIBUTE, AuthenticationErrorCode.EXPIRED_ACCESS_TOKEN);

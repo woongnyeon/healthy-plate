@@ -16,7 +16,13 @@ public class RefreshTokenService {
     @Transactional
     public void saveRefreshToken(final Long userId, final String token, long refreshTokenExpiration) {
         refreshTokenRepository.findByUserId(userId)
-            .ifPresent(existing -> refreshTokenRepository.deleteByToken(existing.getToken()));
+            .ifPresent(existing -> {
+                if (!existing.isExpired()) {
+                    return;
+                }
+                refreshTokenRepository.deleteByToken(existing.getToken());
+
+            });
 
         final LocalDateTime expiryDate = LocalDateTime.now().plusSeconds(refreshTokenExpiration / 1000);
         final RefreshToken refreshToken = new RefreshToken(token, userId, expiryDate);
