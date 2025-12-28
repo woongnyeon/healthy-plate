@@ -3,7 +3,7 @@ import { useEditQuery } from "../../../hooks/useEditQuery";
 import { useRecipeEditorStore } from "../../../store/EditStore";
 
 import { IngredientCard } from "./IngredientCard";
-import { IngredientList } from "./IngrdientList";
+import { IngredientList } from "./IngredientList";
 
 export const IngredientEditor = () => {
   const ingredients = useRecipeEditorStore((s) => s.ingredients);
