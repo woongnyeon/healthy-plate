@@ -43,6 +43,7 @@ public class SecurityConfig {
                     "/swagger-resources/**",
                     "/oauth2/**",
                     "/api/auth/**",
+                    "/api/batch/**",
                     "/api/users/duplicate/**"
                 ).permitAll()
                 .anyRequest().authenticated()
