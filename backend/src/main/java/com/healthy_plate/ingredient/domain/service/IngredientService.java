@@ -5,6 +5,7 @@ import com.healthy_plate.ingredient.domain.model.RegistrationType;
 import com.healthy_plate.ingredient.domain.repository.IngredientRepository;
 import com.healthy_plate.shared.error.exception.BusinessErrorCode;
 import com.healthy_plate.shared.error.exception.BusinessException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -35,5 +36,10 @@ public class IngredientService {
             null
         );
         ingredientRepository.save(ingredient);
+    }
+
+    public List<Ingredient> searchIngredientsByName(final String name) {
+        return ingredientRepository.findByName(name)
+            .orElse(null);
     }
 }
