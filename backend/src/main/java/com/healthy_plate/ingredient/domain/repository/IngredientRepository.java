@@ -4,7 +4,9 @@ import com.healthy_plate.ingredient.domain.model.Ingredient;
 
 public interface IngredientRepository {
 
-    Ingredient save(Ingredient ingredient);
+    void save(Ingredient ingredient);
+
+    boolean existByName(String name);
 
     long count();
 

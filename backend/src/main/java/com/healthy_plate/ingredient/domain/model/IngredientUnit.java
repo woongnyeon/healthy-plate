@@ -27,6 +27,6 @@ public enum IngredientUnit {
                 return ingredientUnit;
             }
         }
-        throw new IllegalArgumentException("Unknown unit: " + unit);
+        throw new IllegalArgumentException(String.format("%s는 등록되지 않은 단위입니다.", unit));
     }
 }
