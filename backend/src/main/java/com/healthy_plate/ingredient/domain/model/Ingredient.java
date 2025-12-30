@@ -41,6 +41,10 @@ public class Ingredient extends BaseEntity {
     private String servingSize;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "unit", length = 10)
+    private IngredientUnit unit;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "registration_type", length = 20, nullable = false)
     private RegistrationType registrationType = RegistrationType.SYSTEM;
 
@@ -69,11 +73,12 @@ public class Ingredient extends BaseEntity {
     }
 
     // Batch 로딩용 정적 팩토리 메서드
-    public static Ingredient createSystemIngredient(final String name, final int calorie, final String servingSize) {
+    public static Ingredient createSystemIngredient(final String name, final int calorie, final String servingSize, final IngredientUnit unit) {
         Ingredient ingredient = new Ingredient();
         ingredient.name = name;
         ingredient.calorie = calorie;
         ingredient.servingSize = servingSize;
+        ingredient.unit = unit;
         ingredient.registrationType = RegistrationType.SYSTEM;
         ingredient.isVerified = true;
         ingredient.registeredBy = null;

@@ -2,6 +2,7 @@ package com.healthy_plate.ingredient.infrastructure.batch;
 
 import com.healthy_plate.ingredient.domain.model.CsvIngredient;
 import com.healthy_plate.ingredient.domain.model.Ingredient;
+import com.healthy_plate.ingredient.domain.model.IngredientUnit;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,10 +56,11 @@ public class IngredientBatchConfig {
             .linesToSkip(1)  // 헤더 스킵
             .delimited()
             .delimiter(",")
-            .names("foodName", "servingSize", "energy")
+            .names("foodName", "servingSize", "unit", "energy")
             .fieldSetMapper(fieldSet -> new CsvIngredient(
                 fieldSet.readString("foodName"),
                 fieldSet.readString("servingSize"),
+                fieldSet.readString("unit"),
                 fieldSet.readString("energy")
             ))
             .build();
@@ -77,6 +79,16 @@ public class IngredientBatchConfig {
 
                 // 영양성분함량기준량
                 String servingSize = csvRow.servingSize();
+                String unitStr = csvRow.unit();
+
+                // 단위 변환
+                IngredientUnit unit;
+                try {
+                    unit = IngredientUnit.fromUnit(unitStr.trim());
+                } catch (IllegalArgumentException e) {
+                    log.warn("알 수 없는 단위 ({}): {}, 해당 데이터 건너뜀", foodName, unitStr);
+                    return null;  // 알 수 없는 단위는 스킵
+                }
 
                 // 칼로리 파싱
                 int calorie = 0;
@@ -90,7 +102,7 @@ public class IngredientBatchConfig {
                 }
 
                 // Ingredient 생성
-                return Ingredient.createSystemIngredient(foodName.trim(), calorie, servingSize.trim());
+                return Ingredient.createSystemIngredient(foodName.trim(), calorie, servingSize.trim(), unit);
 
             } catch (Exception e) {
                 log.error("데이터 처리 중 오류 발생: {}", csvRow, e);
