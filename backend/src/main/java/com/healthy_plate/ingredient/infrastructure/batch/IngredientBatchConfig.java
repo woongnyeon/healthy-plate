@@ -56,12 +56,12 @@ public class IngredientBatchConfig {
             .linesToSkip(1)  // 헤더 스킵
             .delimited()
             .delimiter(",")
-            .names("foodName", "servingSize", "unit", "energy")
+            .names("name", "servingSize", "unit", "calorie")
             .fieldSetMapper(fieldSet -> new CsvIngredient(
-                fieldSet.readString("foodName"),
+                fieldSet.readString("name"),
                 fieldSet.readString("servingSize"),
                 fieldSet.readString("unit"),
-                fieldSet.readString("energy")
+                fieldSet.readString("calorie")
             ))
             .build();
     }
@@ -71,7 +71,7 @@ public class IngredientBatchConfig {
         return csvRow -> {
             try {
                 // 식품명 검증
-                String foodName = csvRow.foodName();
+                String foodName = csvRow.name();
                 if (foodName == null || foodName.trim().isEmpty()) {
                     log.warn("식품명이 비어있는 데이터 건너뜀");
                     return null;  // null 반환 시 해당 데이터 스킵
@@ -93,12 +93,12 @@ public class IngredientBatchConfig {
                 // 칼로리 파싱
                 int calorie = 0;
                 try {
-                    String energyStr = csvRow.energy();
+                    String energyStr = csvRow.calorie();
                     if (energyStr != null && !energyStr.trim().isEmpty()) {
                         calorie = (int) Double.parseDouble(energyStr.trim());
                     }
                 } catch (NumberFormatException e) {
-                    log.warn("칼로리 파싱 실패 ({}): {}, 기본값 0으로 설정", foodName, csvRow.energy());
+                    log.warn("칼로리 파싱 실패 ({}): {}, 기본값 0으로 설정", foodName, csvRow.calorie());
                 }
 
                 // Ingredient 생성

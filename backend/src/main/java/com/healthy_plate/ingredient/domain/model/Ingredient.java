@@ -48,41 +48,46 @@ public class Ingredient extends BaseEntity {
     @Column(name = "registration_type", length = 20, nullable = false)
     private RegistrationType registrationType = RegistrationType.SYSTEM;
 
+    //등록한 회원
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "registered_by")
     private User registeredBy;
 
+    //검증 여부 (관리자 승인)
     @Column(name = "is_verified", nullable = false)
     private Boolean isVerified = false;
 
     public Ingredient(
         final String name,
         final String nameEn,
+        final int calorie,
+        final String servingSize,
+        final String unit,
         final RegistrationType registrationType,
+        final boolean isVerified,
         final User registeredBy
     ) {
         this.name = name;
         this.nameEn = nameEn;
+        this.calorie = calorie;
+        this.servingSize = servingSize;
+        this.unit = IngredientUnit.fromUnit(unit);
         this.registrationType = registrationType;
         this.registeredBy = registeredBy;
         this.isVerified = false;
-    }
-
-    public void verify() {
-        this.isVerified = true;
     }
 
     // Batch 로딩용 정적 팩토리 메서드
     public static Ingredient createSystemIngredient(final String name, final int calorie, final String servingSize, final IngredientUnit unit) {
         Ingredient ingredient = new Ingredient();
         ingredient.name = name;
+        ingredient.nameEn = null;
         ingredient.calorie = calorie;
         ingredient.servingSize = servingSize;
         ingredient.unit = unit;
         ingredient.registrationType = RegistrationType.SYSTEM;
-        ingredient.isVerified = true;
         ingredient.registeredBy = null;
-        ingredient.nameEn = null;
+        ingredient.isVerified = true;
         return ingredient;
     }
 }
