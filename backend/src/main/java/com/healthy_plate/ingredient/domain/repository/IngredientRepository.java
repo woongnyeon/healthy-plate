@@ -7,4 +7,6 @@ public interface IngredientRepository {
     Ingredient save(Ingredient ingredient);
 
     long count();
+
+    void deleteAll();
 }
