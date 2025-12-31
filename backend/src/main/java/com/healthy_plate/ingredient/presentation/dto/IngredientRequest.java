@@ -14,7 +14,7 @@ public record IngredientRequest(
     String nameEn,
 
     @NotNull
-    String servingSize,
+    Double servingSize,
 
     @NotNull
     String unit,

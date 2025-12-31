@@ -18,11 +18,11 @@ public class IngredientService {
     public void createIngredient(
         final String name,
         final String nameEn,
-        final String servingSize,
+        final Double servingSize,
         final String unit,
         final int calorie
     ) {
-        if (ingredientRepository.existByName(name)) {
+        if (ingredientRepository.existsByName(name)) {
             throw new BusinessException(BusinessErrorCode.EXIST_INGREDIENT);
         }
         Ingredient ingredient = new Ingredient(
@@ -39,7 +39,6 @@ public class IngredientService {
     }
 
     public List<Ingredient> searchIngredientsByName(final String name) {
-        return ingredientRepository.findByName(name)
-            .orElse(null);
+        return ingredientRepository.findByNameContaining(name);
     }
 }

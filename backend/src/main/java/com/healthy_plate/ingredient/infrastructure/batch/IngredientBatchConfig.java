@@ -102,7 +102,7 @@ public class IngredientBatchConfig {
                 }
 
                 // Ingredient 생성
-                return Ingredient.createSystemIngredient(foodName.trim(), calorie, servingSize.trim(), unit);
+                return Ingredient.createSystemIngredient(foodName.trim(), calorie, Double.valueOf(servingSize.trim()), unit);
 
             } catch (Exception e) {
                 log.error("데이터 처리 중 오류 발생: {}", csvRow, e);
