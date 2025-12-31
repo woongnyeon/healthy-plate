@@ -45,7 +45,27 @@ public class IngredientService {
     }
 
     @Transactional
-    public void deleteById(final String id) {
+    public void updateIngredient(
+        final Long id,
+        final String name,
+        final String nameEn,
+        final Double servingSize,
+        final String unit,
+        final Integer calorie
+    ) {
+        Ingredient ingredient = ingredientRepository.findById(id)
+            .orElseThrow(() -> new BusinessException(BusinessErrorCode.INGREDIENT_NOT_FOUND));
+        ingredient.updateIngredient(
+            name,
+            nameEn,
+            servingSize,
+            unit,
+            calorie
+        );
+    }
+
+    @Transactional
+    public void deleteById(final Long id) {
         ingredientRepository.deleteById(id);
     }
 }

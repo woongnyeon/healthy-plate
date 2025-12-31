@@ -90,4 +90,45 @@ public class Ingredient extends BaseEntity {
         ingredient.isVerified = true;
         return ingredient;
     }
+
+    public void updateIngredient(
+        final String name,
+        final String nameEn,
+        final Double servingSize,
+        final String unit,
+        final Integer calorie
+    ) {
+        validateUpdateParameters(name, servingSize, calorie);
+
+        if (name != null) {
+            this.name = name;
+        }
+        if (nameEn != null) {
+            this.nameEn = nameEn;
+        }
+        if (servingSize != null) {
+            this.servingSize = servingSize;
+        }
+        if (unit != null) {
+            this.unit = IngredientUnit.fromUnit(unit);
+        }
+        if (calorie != null) {
+            this.calorie = calorie;
+        }
+
+    }
+
+    private void validateUpdateParameters(final String name, final Double servingSize, final Integer calorie) {
+        if (name != null && name.isBlank()) {
+            throw new IllegalArgumentException("식재료명은 공백일 수 없습니다.");
+        }
+        if (servingSize != null && servingSize <= 0) {
+            throw new IllegalArgumentException("1회 제공량은 0보다 커야 합니다.");
+        }
+        if (calorie != null && calorie < 0) {
+            throw new IllegalArgumentException("칼로리는 음수일 수 없습니다.");
+        }
+    }
+
+
 }
