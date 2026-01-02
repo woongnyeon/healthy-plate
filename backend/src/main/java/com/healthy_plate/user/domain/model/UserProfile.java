@@ -21,23 +21,20 @@ public class UserProfile {
     @Column(length = 500)
     private String introduction;
 
+    private UserProfile(final String nickname, final String profileImageUrl, final String introduction) {
+        this.nickname = nickname;
+        this.profileImageUrl = profileImageUrl;
+        this.introduction = introduction;
+    }
 
-    public static UserProfile of(String nickname, String profileImageUrl, String introduction) {
+    public static UserProfile of(final String nickname, final String profileImageUrl, final String introduction) {
         validateName(nickname);
         validateIntroduction(introduction);
-        UserProfile profile = new UserProfile();
-        profile.nickname = nickname.trim();
-        profile.profileImageUrl = profileImageUrl;
-        profile.introduction = introduction;
-        return profile;
+        return new UserProfile(nickname.trim(), profileImageUrl, introduction);
     }
 
     public static UserProfile createEmpty() {
-        UserProfile profile = new UserProfile();
-        profile.nickname = null;
-        profile.profileImageUrl = null;
-        profile.introduction = null;
-        return profile;
+        return new UserProfile(null, null, null);
     }
 
     public void updateNickname(final String nickname, final String profileImageUrl, final String introduction) {
