@@ -13,14 +13,14 @@ public record IngredientRequest(
     @Size(max = 100, message = "식재료명은 100자 이하여야 합니다.")
     String nameEn,
 
-    @NotNull
+    @NotNull(message = "제공량은 필수입니다.")
     Double servingSize,
 
-    @NotNull
+    @NotNull(message = "단위는 필수입니다.")
     String unit,
 
-    @NotNull
-    int calorie
+    @NotNull(message = "칼로리는 필수입니다.")
+    Integer calorie
 ) {
 
 }
