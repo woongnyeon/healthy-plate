@@ -8,7 +8,7 @@ export const EditPage = () => {
         <div className="pt-6" />
 
         <div className="flex-1 overflow-y-auto pb-10">
-          <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-10">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1.4fr] gap-10">
             <EditSection />
             <PreviewSection />
           </div>
