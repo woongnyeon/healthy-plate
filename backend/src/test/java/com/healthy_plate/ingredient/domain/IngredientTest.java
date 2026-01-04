@@ -52,7 +52,7 @@ class IngredientTest {
             softly.assertThat(ingredient.getServingSize()).isEqualTo(servingSize);
             softly.assertThat(ingredient.getUnit()).isEqualTo(unit);
             softly.assertThat(ingredient.getRegistrationType()).isEqualTo(registrationType);
-            softly.assertThat(ingredient.getIsVerified()).isFalse();
+            softly.assertThat(ingredient.getIsVerified()).isTrue();
             softly.assertThat(ingredient.getRegisterId()).isNull();
         });
     }
@@ -78,7 +78,7 @@ class IngredientTest {
             softly.assertThat(ingredient.getServingSize()).isEqualTo(servingSize);
             softly.assertThat(ingredient.getUnit()).isEqualTo(unit);
             softly.assertThat(ingredient.getRegistrationType()).isEqualTo(RegistrationType.SYSTEM);
-            softly.assertThat(ingredient.getIsVerified()).isFalse();
+            softly.assertThat(ingredient.getIsVerified()).isTrue();
             softly.assertThat(ingredient.getRegisterId()).isNull();
         });
     }
