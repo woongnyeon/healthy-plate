@@ -20,7 +20,7 @@ public class CalorieTest {
         Calorie calorie = Calorie.of(testCalorie);
 
         //then
-        assertThat(calorie.getValue().equals(testCalorie));
+        assertThat(calorie.getValue()).isEqualTo(testCalorie);
     }
 
     @DisplayName("0 미만의 칼로리는 예외가 발생한다")

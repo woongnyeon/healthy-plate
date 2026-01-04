@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class IngredientName {
 
-    @Column(name = "name", length = 100, nullable = false)
+    @Column(name = "name", length = 100, nullable = false, unique = true)
     private String value;
 
     private IngredientName(final String value) {
