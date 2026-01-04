@@ -48,7 +48,6 @@ public class AuthController implements SwaggerAuthController {
         return ResponseEntity.ok(new TokenResponse(newAccessToken));
     }
 
-    //회원가입 용
     @PostMapping("/profile-image/presigned-url")
     public ResponseEntity<PresignedUrlResponse> getPresignedUrl(
         @Valid @RequestBody final PresignedUrlRequest request,

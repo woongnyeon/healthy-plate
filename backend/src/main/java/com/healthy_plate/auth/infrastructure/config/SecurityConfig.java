@@ -38,6 +38,7 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/",
                     "/login/**",
+                    "/error",
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
                     "/swagger-resources/**",
@@ -45,6 +46,7 @@ public class SecurityConfig {
                     "/api/auth/**",
                     "/api/users/duplicate/**"
                 ).permitAll()
+                .requestMatchers("/api/batch/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
 

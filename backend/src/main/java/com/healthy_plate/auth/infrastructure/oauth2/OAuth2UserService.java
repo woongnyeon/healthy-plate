@@ -47,7 +47,8 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
             profile,
             provider,
             userInfo.getProviderId(),
-            UserRole.ROLE_USER
+            UserRole.ROLE_USER,
+            true
         );
         return userRepository.save(user);
     }

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Embeddable
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Email {
 
     private static final String EMAIL_PATTERN = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
@@ -16,16 +16,16 @@ public class Email {
     @Column(name = "email", nullable = false)
     private String value;
 
-
-    public static Email of(String value) {
-        validateEmail(value);
-
-        Email email = new Email();
-        email.value = value;
-        return email;
+    private Email(final String value) {
+        this.value = value;
     }
 
-    private static void validateEmail(String value) {
+    public static Email of(final String value) {
+        validateEmail(value);
+        return new Email(value);
+    }
+
+    private static void validateEmail(final String value) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException("이메일은 필수입니다.");
         }

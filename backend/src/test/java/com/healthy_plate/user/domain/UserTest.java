@@ -1,6 +1,7 @@
 package com.healthy_plate.user.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.healthy_plate.auth.domain.model.OAuth2Provider;
 import com.healthy_plate.user.domain.model.Email;
@@ -24,14 +25,16 @@ class UserTest {
         UserRole role = UserRole.ROLE_USER;
 
         // when
-        User user = new User(email, profile, provider, providerId, role);
+        User user = new User(email, profile, provider, providerId, role, true);
 
         // then
-        assertThat(user.getEmail()).isEqualTo(email);
-        assertThat(user.getProfile()).isEqualTo(profile);
-        assertThat(user.getProvider()).isEqualTo(provider);
-        assertThat(user.getProviderId()).isEqualTo(providerId);
-        assertThat(user.getRole()).isEqualTo(role);
+        assertSoftly(softly -> {
+            softly.assertThat(user.getEmail()).isEqualTo(email);
+            softly.assertThat(user.getProfile()).isEqualTo(profile);
+            softly.assertThat(user.getProvider()).isEqualTo(provider);
+            softly.assertThat(user.getProviderId()).isEqualTo(providerId);
+            softly.assertThat(user.getRole()).isEqualTo(role);
+        });
     }
 
     @Test
@@ -44,11 +47,13 @@ class UserTest {
         String providerId = "google-123";
 
         // when
-        User user = new User(email, profile, provider, providerId, UserRole.ROLE_USER);
+        User user = new User(email, profile, provider, providerId, UserRole.ROLE_USER, true);
 
         // then
-        assertThat(user.getProvider()).isEqualTo(OAuth2Provider.GOOGLE);
-        assertThat(user.getProviderId()).isEqualTo("google-123");
+        assertSoftly(softly -> {
+            softly.assertThat(user.getProvider()).isEqualTo(OAuth2Provider.GOOGLE);
+            softly.assertThat(user.getProviderId()).isEqualTo("google-123");
+        });
     }
 
     @Test
@@ -61,11 +66,13 @@ class UserTest {
         String providerId = "kakao-456";
 
         // when
-        User user = new User(email, profile, provider, providerId, UserRole.ROLE_USER);
+        User user = new User(email, profile, provider, providerId, UserRole.ROLE_USER, true);
 
         // then
-        assertThat(user.getProvider()).isEqualTo(OAuth2Provider.KAKAO);
-        assertThat(user.getProviderId()).isEqualTo("kakao-456");
+        assertSoftly(softly -> {
+            softly.assertThat(user.getProvider()).isEqualTo(OAuth2Provider.KAKAO);
+            softly.assertThat(user.getProviderId()).isEqualTo("kakao-456");
+        });
     }
 
     @Test
@@ -78,11 +85,13 @@ class UserTest {
         String providerId = "naver-789";
 
         // when
-        User user = new User(email, profile, provider, providerId, UserRole.ROLE_USER);
+        User user = new User(email, profile, provider, providerId, UserRole.ROLE_USER, true);
 
         // then
-        assertThat(user.getProvider()).isEqualTo(OAuth2Provider.NAVER);
-        assertThat(user.getProviderId()).isEqualTo("naver-789");
+        assertSoftly(softly -> {
+            softly.assertThat(user.getProvider()).isEqualTo(OAuth2Provider.NAVER);
+            softly.assertThat(user.getProviderId()).isEqualTo("naver-789");
+        });
     }
 
     @Test
@@ -93,7 +102,7 @@ class UserTest {
         UserProfile profile = UserProfile.of("관리자", null, "안녕하세요 꿈나무입니다.");
 
         // when
-        User user = new User(email, profile, OAuth2Provider.GOOGLE, "admin-123", UserRole.ROLE_ADMIN);
+        User user = new User(email, profile, OAuth2Provider.GOOGLE, "admin-123", UserRole.ROLE_ADMIN, true);
 
         // then
         assertThat(user.getRole()).isEqualTo(UserRole.ROLE_ADMIN);

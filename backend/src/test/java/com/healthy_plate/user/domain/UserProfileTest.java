@@ -2,6 +2,7 @@ package com.healthy_plate.user.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.healthy_plate.user.domain.model.UserProfile;
 import org.junit.jupiter.api.DisplayName;
@@ -25,8 +26,10 @@ class UserProfileTest {
         UserProfile profile = UserProfile.of(nickname, profileImageUrl, introduction);
 
         // then
-        assertThat(profile.getNickname()).isEqualTo("테스트유저");
-        assertThat(profile.getProfileImageUrl()).isEqualTo(profileImageUrl);
+        assertSoftly(softly -> {
+            softly.assertThat(profile.getNickname()).isEqualTo("테스트유저");
+            softly.assertThat(profile.getProfileImageUrl()).isEqualTo(profileImageUrl);
+        });
     }
 
     @Test
@@ -40,8 +43,10 @@ class UserProfileTest {
         UserProfile profile = UserProfile.of(nickname, null, introduction);
 
         // then
-        assertThat(profile.getNickname()).isEqualTo("테스트유저");
-        assertThat(profile.getProfileImageUrl()).isNull();
+        assertSoftly(softly -> {
+            softly.assertThat(profile.getNickname()).isEqualTo("테스트유저");
+            softly.assertThat(profile.getProfileImageUrl()).isNull();
+        });
     }
 
     @Test

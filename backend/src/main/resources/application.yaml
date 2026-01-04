@@ -9,3 +9,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
+
+  batch:
+    job:
+      enabled: false  # Job 자동 실행 비활성화 (REST API로 수동 실행)
+    jdbc:
+      initialize-schema: always  # Batch 메타데이터 테이블 자동 생성
