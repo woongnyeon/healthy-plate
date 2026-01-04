@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RegisterId {
 
-    @Column(name = "registeredId")
+    @Column(name = "registered_id")
     private Long value;
 
     private RegisterId(final Long value) {

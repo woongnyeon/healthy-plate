@@ -52,7 +52,7 @@ public class Ingredient extends BaseEntity {
 
     //검증 여부 (관리자 승인)
     @Column(name = "is_verified", nullable = false)
-    private Boolean isVerified = false;
+    private Boolean isVerified;
 
     public Ingredient(
         final IngredientName name,
@@ -71,7 +71,7 @@ public class Ingredient extends BaseEntity {
         this.unit = unit;
         this.registrationType = registrationType;
         this.registerId = registerId;
-        this.isVerified = false;
+        this.isVerified = isVerified;
     }
 
     // Batch 로딩용 정적 팩토리 메서드

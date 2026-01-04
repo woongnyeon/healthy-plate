@@ -83,35 +83,9 @@ public class IngredientBatchConfig {
                 // 영양성분함량기준량
                 String unitStr = csvRow.unit();
 
-                // 단위 변환
-                IngredientUnit unit;
-                try {
-                    unit = IngredientUnit.fromUnit(unitStr.trim());
-                } catch (IllegalArgumentException e) {
-                    log.warn("알 수 없는 단위 ({}): {}, 해당 데이터 건너뜀", foodName, unitStr);
-                    return null;  // 알 수 없는 단위는 스킵
-                }
-
-                // 칼로리 파싱
-                Integer calorie = 0;
-                try {
-                    String energyStr = csvRow.calorie();
-                    if (energyStr != null && !energyStr.trim().isEmpty()) {
-                        calorie = Integer.parseInt(energyStr.trim());
-                    }
-                } catch (NumberFormatException e) {
-                    log.warn("칼로리 파싱 실패 ({}): {}, 기본값 0으로 설정", foodName, csvRow.calorie());
-                }
-
-                Double servingSize = 0.0;
-                try {
-                    String servingSizeStr = csvRow.servingSize();
-                    if (servingSizeStr != null && !servingSizeStr.trim().isEmpty()) {
-                        servingSize = Double.parseDouble(servingSizeStr.trim());
-                    }
-                } catch (NumberFormatException e) {
-                    log.warn("제공량 파싱 실패 ({}): {}, 기본값 0으로 설정", foodName, csvRow.servingSize());
-                }
+                IngredientUnit unit = validateAndParseIngredientUnit(unitStr, foodName);
+                Integer calorie = validateAndParseCalorie(csvRow, foodName);
+                Double servingSize = validateAndParseServingSize(csvRow, foodName);
 
                 // Value Object 생성
                 IngredientName ingredientName = IngredientName.of(foodName.trim());
@@ -126,6 +100,48 @@ public class IngredientBatchConfig {
                 return null;  // 오류 발생 시 해당 데이터 스킵
             }
         };
+    }
+
+    private static Double validateAndParseServingSize(CsvIngredient csvRow, String foodName) {
+        double servingSize = 0.0;
+        try {
+            String servingSizeStr = csvRow.servingSize();
+            if (servingSizeStr != null && !servingSizeStr.trim().isEmpty()) {
+                servingSize = Double.parseDouble(servingSizeStr.trim());
+            }
+
+        } catch (NumberFormatException e) {
+            log.warn("제공량 파싱 실패 ({}): {}, 기본값 0으로 설정", foodName, csvRow.servingSize());
+        }
+        if (servingSize <= 0) {
+            log.warn("유효하지 않은 제공량 ({}): {}, 해당 데이터 건너뜀", foodName, servingSize);
+            return null;
+        }
+        return servingSize;
+    }
+
+    private static Integer validateAndParseCalorie(CsvIngredient csvRow, String foodName) {
+        Integer calorie = 0;
+        try {
+            String energyStr = csvRow.calorie();
+            if (energyStr != null && !energyStr.trim().isEmpty()) {
+                calorie = Integer.parseInt(energyStr.trim());
+            }
+        } catch (NumberFormatException e) {
+            log.warn("칼로리 파싱 실패 ({}): {}, 기본값 0으로 설정", foodName, csvRow.calorie());
+        }
+        return calorie;
+    }
+
+    private static IngredientUnit validateAndParseIngredientUnit(String unitStr, String foodName) {
+        IngredientUnit unit;
+        try {
+            unit = IngredientUnit.fromUnit(unitStr.trim());
+        } catch (IllegalArgumentException e) {
+            log.warn("알 수 없는 단위 ({}): {}, 해당 데이터 건너뜀", foodName, unitStr);
+            return null;
+        }
+        return unit;
     }
 
     @Bean
