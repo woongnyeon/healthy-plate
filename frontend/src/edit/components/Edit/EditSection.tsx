@@ -4,10 +4,10 @@ import { TagEditor } from "./Tag/TagEditor";
 import { IngredientEditor } from "./Ingredinet/IngredientEditor";
 import { RecipeEditor } from "./Content/RecipeEditor";
 import { EditActionBar } from "./Content/EditActionBar";
-import { useContent } from "../../hooks/Content/useContent";
+import { useEdit } from "../../hooks/useEdit";
 
 export const EditSection = () => {
-  const { editor, title, tags, addTag, removeTag,setTitle,saveDraft, submit } = useContent();
+  const { editor, titleProps, tagProps, ingredientProps, actions } = useEdit();
 
   if (!editor) return null;
 
@@ -20,17 +20,11 @@ export const EditSection = () => {
         <div className="mt-4 border-t border-gray-100" />
       </div>
 
-      <TitleEditor
-        title={title}
-        onChangeTitle={setTitle}
-        allowNewLine={false}
-        maxLength={60}
-        onEnter={() => editor.commands.focus()}
-      />
+      <TitleEditor {...titleProps} />
 
-      <TagEditor tags={tags} onAdd={addTag} onRemove={removeTag} />
+      <TagEditor {...tagProps} />
 
-      <IngredientEditor />
+      <IngredientEditor {...ingredientProps} />
 
       <div className="mt-10 w-full max-w-[720px]">
         <div className="max-h-[60vh] overflow-y-auto">
@@ -39,9 +33,9 @@ export const EditSection = () => {
       </div>
 
       <EditActionBar
-        onSaveDraft={saveDraft}
-        onSubmit={submit}
-        submitDisabled={title.trim().length === 0}
+        onSaveDraft={actions.onSaveDraft}
+        onSubmit={actions.onSubmit}
+        submitDisabled={actions.submitDisabled}
       />
     </section>
   );
