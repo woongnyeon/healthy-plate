@@ -1,18 +1,14 @@
 package com.healthy_plate.ingredient.domain.model;
 
 import com.healthy_plate.shared.domain.BaseEntity;
-import com.healthy_plate.user.domain.model.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -51,9 +47,8 @@ public class Ingredient extends BaseEntity {
     private RegistrationType registrationType = RegistrationType.SYSTEM;
 
     //등록한 회원
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "registered_by")
-    private User registeredBy;
+    @Embedded
+    private RegisterId registerId;
 
     //검증 여부 (관리자 승인)
     @Column(name = "is_verified", nullable = false)
@@ -67,7 +62,7 @@ public class Ingredient extends BaseEntity {
         final IngredientUnit unit,
         final RegistrationType registrationType,
         final boolean isVerified,
-        final User registeredBy
+        final RegisterId registerId
     ) {
         this.name = name;
         this.nameEn = nameEn;
@@ -75,7 +70,7 @@ public class Ingredient extends BaseEntity {
         this.servingSize = servingSize;
         this.unit = unit;
         this.registrationType = registrationType;
-        this.registeredBy = registeredBy;
+        this.registerId = registerId;
         this.isVerified = false;
     }
 

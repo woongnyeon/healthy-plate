@@ -1,5 +1,6 @@
 package com.healthy_plate.ingredient.application;
 
+import com.healthy_plate.ingredient.application.dto.IngredientWithUserDto;
 import com.healthy_plate.ingredient.domain.model.Calorie;
 import com.healthy_plate.ingredient.domain.model.Ingredient;
 import com.healthy_plate.ingredient.domain.model.IngredientName;
@@ -20,6 +21,7 @@ public class IngredientService {
 
     private final IngredientRepository ingredientRepository;
 
+    @Transactional
     public void createIngredient(
         final String name,
         final String nameEn,
@@ -72,5 +74,14 @@ public class IngredientService {
     @Transactional
     public void deleteById(final Long id) {
         ingredientRepository.deleteById(id);
+    }
+
+    /**
+     * CQRS - Query: 특정 사용자가 등록한 식재료 목록 조회 (User 정보 포함)
+     * 읽기 전용 DTO를 반환하여 User 정보와 함께 효율적으로 조회
+     */
+    @Transactional(readOnly = true)
+    public List<IngredientWithUserDto> getIngredientsByUserId(final Long userId) {
+        return ingredientRepository.findByUserIdWithUserInfo(userId);
     }
 }
