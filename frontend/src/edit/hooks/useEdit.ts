@@ -1,58 +1,44 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef } from "react";
-import StarterKit from "@tiptap/starter-kit";
-import Placeholder from "@tiptap/extension-placeholder";
-import Underline from "@tiptap/extension-underline";
-import Image from "@tiptap/extension-image";
-import Link from "@tiptap/extension-link";
-import Youtube from "@tiptap/extension-youtube";
-import { useEditor } from "@tiptap/react";
+import { useRecipeEditorStore } from "../store/EditStore";
 import { useShallow } from "zustand/react/shallow";
+import type { RecipeEditorState } from "../store/EditStore";
 
-import { useRecipeEditorStore, type RecipeEditorState } from "../store/EditStore";
-import { useEditQuery } from "./query/useEditQuery";
-import { useSearchIngredient } from "./util/useSearchIngredient";
+// 도메인별 훅
 import { useTitle } from "./Content/useTitle";
-import { useIngredient } from "./Ingredient/useIngredient";
+import { useEditTags } from "./Tag/useEditTags";
+import { useEditIngredients } from "./Ingredient/useEditIngredients";
+import { useEditorConfig } from "./Editor/useEditorConfig";
 
+/**
+ * 레시피 편집 페이지의 Facade 훅
+ * 
+ * 각 도메인별 훅을 조합하여 페이지 레벨의 상태와 액션을 제공합니다.
+ * - useTitle: 제목 편집
+ * - useEditTags: 태그 편집
+ * - useEditIngredients: 재료 편집 (검색, 추가, 삭제)
+ * - useEditorConfig: Tiptap 에디터 설정
+ */
 export const useEdit = () => {
-  // 1. 상태 관리 (zustand/shallow) 가져오기
+  // 1. Store에서 필요한 상태와 액션 가져오기
   const {
-    tags,
-    ingredients,
     contentHtml,
-    totalKcal,
-    addTag,
-    removeTag,
     setContentHtml,
-    addIngredient,
-    removeIngredient,
     saveToLocalStorage,
     loadFromLocalStorage,
-    settings,
-    toggleSetting,
   } = useRecipeEditorStore(
     useShallow((state: RecipeEditorState) => ({
-      tags: state.tags,
-      ingredients: state.ingredients,
       contentHtml: state.contentHtml,
-      totalKcal: state.totalKcal,
-      addTag: state.addTag,
-      removeTag: state.removeTag,
       setContentHtml: state.setContentHtml,
-      addIngredient: state.addIngredient,
-      removeIngredient: state.removeIngredient,
       saveToLocalStorage: state.saveToLocalStorage,
       loadFromLocalStorage: state.loadFromLocalStorage,
-      settings: state.settings,
-      toggleSetting: state.toggleSetting,
     }))
   );
 
   const isHydratingRef = useRef(false);
   const hasCheckedDraftRef = useRef(false);
 
-  // 2. 임시 저장 로직
+  // 2. 임시 저장 로직 (페이지 로드 시 1회)
   useEffect(() => {
     if (hasCheckedDraftRef.current) return;
     hasCheckedDraftRef.current = true;
@@ -68,137 +54,60 @@ export const useEdit = () => {
     }
   }, [loadFromLocalStorage]);
 
-  // 3. 에디터 설정
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Link.configure({ openOnClick: false }),
-      Placeholder.configure({ placeholder: "레시피를 작성해 주세요…" }),
-      Underline,
-      Image,
-      Youtube.configure({ inline: false }),
-    ],
-    // 초기 content는 hook 호출 시점의 contentHtml (비어있을 수 있음)
-    // 실제 draft 로드 시에는 아래 useEffect에서 처리
-    content: contentHtml, 
-    editorProps: {
-      attributes: {
-        class:
-          "ProseMirror outline-none focus:outline-none " +
-          "prose prose-sm max-w-none leading-7 text-gray-800 " +
-          "min-h-[360px]",
-      },
-    },
-    onUpdate: ({ editor }) => {
-      // 에디터 -> 스토어 단방향 업데이트
-      setContentHtml(editor.getHTML());
-    },
+  // 3. Tiptap 에디터 설정
+  const editor = useEditorConfig({
+    initialContent: contentHtml,
+    onUpdate: setContentHtml,
   });
 
-  // 콘텐츠 HTML -> 에디터 동기화 (Hydration 시에만 1회성)
+  // 4. 콘텐츠 HTML -> 에디터 동기화 (Hydration 시에만 1회성)
   useEffect(() => {
     if (editor && isHydratingRef.current && contentHtml) {
-        // 이미 Editor가 있고, Hydration 플래그가 켜져 있고, contentHtml이 있다면
-        // 스토어의 contentHtml을 에디터에 주입
-        editor.commands.setContent(contentHtml);
-        // 플래그 끄기 (이후에는 에디터 -> 스토어 단방향)
-        isHydratingRef.current = false;
+      editor.commands.setContent(contentHtml);
+      isHydratingRef.current = false;
     }
   }, [contentHtml, editor]);
 
-  // 4. 서브 훅 관리
-
-  // 4-1. 제목 관련 로직
+  // 5. 도메인별 훅 사용
   const titleProps = useTitle({
     maxLength: 60,
     allowNewLine: false,
-    onEnter: () => editor?.commands.focus(),
   });
 
-  // 4-2. 재료 검색 로직
-  const { ingredientQuery } = useEditQuery();
-  const { data: allIngredients = [] } = ingredientQuery();
-  const searchValues = useSearchIngredient(allIngredients);
+  const tagProps = useEditTags();
 
-  // 4-3. 재료 리스트 UI 로직 (키보드, 수동 추가)
-  // 리스트 컴포넌트로 로직 넘기기
-  const ingredientListLogic = useIngredient({
-    query: searchValues.query,
-    isOpen: searchValues.isSearching,
-    items: searchValues.results.map((r) => ({
-      id: Number(r.id),
-      name: r.name,
-      baseAmount: r.amount ?? 0,
-      baseKcal: r.kcal ?? 0,
-    })),
-    onSelect: (item) => {
-      addIngredient({
-        id: Date.now(), // TODO: crypto.randomUUID()로 변경 권장 (숫자 ID 이슈 해결 후)
-        name: item.name,
-        amount: item.baseAmount ?? 0,
-        unit: "g", // 기본 단위 (추후 선택 가능하도록 개선 예정)
-        kcal: item.baseKcal ?? 0,
-      });
-      searchValues.setQuery("");
-    },
-    onClose: () => searchValues.setQuery(""),
-    onManualAdd: ({ name, amount, unit, kcal }) => {
-      addIngredient({
-        id: Date.now(), 
-        name,
-        amount,
-        unit, // 사용자가 선택한 단위 사용
-        kcal,
-      });
-    },
-  });
+  const ingredientData = useEditIngredients();
 
-  const handleToggleSetting = (key: keyof typeof settings) => {
-    toggleSetting(key);
-  }
-
-  // 5. 페이지 액션
+  // 6. 페이지 액션
   const handleSaveDraft = () => {
     saveToLocalStorage();
   };
 
   const handleSubmit = () => {
-    console.log("작성 완료 (TODO: API Call)", {
-      title: titleProps.title,
-      tags,
-      ingredients,
-      contentHtml,
-    });
+    console.log("Submit recipe");
+    // TODO: 서버 전송 로직
   };
 
-  const submitDisabled = titleProps.title.trim().length === 0;
+  const submitDisabled = !titleProps.title.trim();
 
+  // 7. Props 조합하여 반환
   return {
     editor,
     
-    // 타이틀 에디터 props 넘기기
     titleProps,
-
-    // 태그 에디터 props 넘기기
-    tagProps: {
-      tags,
-      onAdd: addTag,
-      onRemove: removeTag,
-    },
-
-    // 재료 에디터 props 넘기기
+    
+    tagProps,
+    
     ingredientProps: {
-      ingredients,
-      totalKcal,
-      settings,
-      onRemove: removeIngredient,
-      searchValues, // 입력창에 여전히 필요
-      // 리스트 컴포넌트로 로직 넘기기
-      ingredientListProps: ingredientListLogic,
-      onToggle: handleToggleSetting,
+      ingredients: ingredientData.ingredients,
+      totalKcal: ingredientData.totalKcal,
+      settings: ingredientData.settings,
+      onRemove: ingredientData.onRemove,
+      searchValues: ingredientData.searchValues,
+      ingredientListProps: ingredientData.ingredientListProps,
+      onToggle: ingredientData.onToggle,
     },
 
-    // 액션
     actions: {
       onSaveDraft: handleSaveDraft,
       onSubmit: handleSubmit,
