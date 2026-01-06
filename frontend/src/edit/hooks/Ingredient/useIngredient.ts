@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo, useRef } from "react";
+import type { IngredientUnit } from "../../types/Ingredient";
 
 type IngredientSearchItem = {
   id: number;
@@ -13,7 +14,7 @@ interface IngredientListProps {
   items: IngredientSearchItem[];
   onSelect: (item: IngredientSearchItem) => void;
   onClose?: () => void;
-  onManualAdd: (payload: { name: string; amount: number; kcal: number }) => void;
+  onManualAdd: (payload: { name: string; amount: number; unit: IngredientUnit; kcal: number }) => void;
 }
 
 export const useIngredient = ({
@@ -37,6 +38,7 @@ export const useIngredient = ({
 
     const [name, setName] = useState<string>("");
     const [amount, setAmount] = useState<string>("");
+    const [unit, setUnit] = useState<IngredientUnit>("g"); // 단위 state 추가
     const [kcal, setKcal] = useState<string>("");
     
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -76,11 +78,13 @@ export const useIngredient = ({
     onManualAdd({
       name: name.trim(),
       amount: Number.isFinite(parsedAmount) ? parsedAmount : 0,
+      unit, // 선택된 단위 포함
       kcal: Number.isFinite(parsedKcal) ? parsedKcal : 0,
     });
 
     setName("");
     setAmount("");
+    setUnit("g"); // 초기화
     setKcal("");
     onClose?.();
   };
@@ -91,9 +95,11 @@ export const useIngredient = ({
         sliced,
         name,
         amount,
+        unit,
         kcal,
         setName,
         setAmount,
+        setUnit,
         setKcal,
         handleManualAdd,
         onSelect,
