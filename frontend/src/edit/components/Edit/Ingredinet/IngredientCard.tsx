@@ -1,17 +1,6 @@
-import type { Ingredient } from "../../../types/Ingredient";
+import type { IngredientCardProps } from "../../../types/Ingredient";
 import { UNIT_LABELS } from "../../../types/Ingredient";
 
-interface IngredientCardProps {
-  ingredients: Ingredient[];
-  totalKcal: number;
-  // 설정 (보이기 여부)
-  settings?: {
-    showIngredients: boolean;
-    showKcal: boolean;
-  };
-  onRemove: (id: number) => void;
-  onToggle: (key: "showIngredients" | "showKcal") => void;
-}
 
 export const IngredientCard = ({
   ingredients,

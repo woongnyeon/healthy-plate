@@ -1,37 +1,5 @@
-import type { RefObject } from "react";
-import type { IngredientUnit } from "../../../types/Ingredient";
+import type { IngredientListProps, IngredientSearchItem, IngredientUnit } from "../../../types/Ingredient";
 import { UNIT_LABELS } from "../../../types/Ingredient";
-
-// 재료 검색 결과
-interface IngredientSearchItem {
-  id: number;
-  name: string;
-  baseAmount?: number;
-  baseKcal?: number;
-};
-
-// 재료 검색 리스트 props
-interface IngredientListProps {
-  query: string;
-  isOpen: boolean;
-    
-  // 상태
-  activeIndex: number;
-  sliced: IngredientSearchItem[];
-  wrapperRef: RefObject<HTMLDivElement | null>;
-  name: string;
-  amount: string;
-  unit: IngredientUnit;
-  kcal: string;
-  setName: (v: string) => void;
-  setAmount: (v: string) => void;
-  setUnit: (v: IngredientUnit) => void;
-  setKcal: (v: string) => void;
-  handleManualAdd: () => void;
-  
-  // 콜백
-  onSelect: (item: IngredientSearchItem) => void;
-}
 
 export const IngredientList = ({
   query,

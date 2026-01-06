@@ -1,11 +1,7 @@
+import type { TagEditorProps } from "../../../types/Tag";
 import { HashTagChip } from "./HashTagChip";
 import { TagInput } from "./TagInput";
 
-interface TagEditorProps {
-  tags: string[];
-  onAdd: (tag: string) => void;
-  onRemove: (tag: string) => void;
-}
 
 export const TagEditor = ({ tags, onAdd, onRemove }: TagEditorProps) => {
   return (

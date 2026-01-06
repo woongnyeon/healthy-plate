@@ -1,8 +1,5 @@
-interface EditActionBarProps {
-  onSaveDraft: () => void;
-  onSubmit: () => void;
-  submitDisabled?: boolean;
-}
+import type { EditActionBarProps } from "../../../types/ActionBar";
+
 
 export const EditActionBar = ({
   onSaveDraft,

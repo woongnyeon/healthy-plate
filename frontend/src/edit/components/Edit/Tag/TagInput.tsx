@@ -1,7 +1,5 @@
-interface TagInputProps {
-  onSubmit: (tags: string) => void;
-  onBackspace?: () => void;
-}
+import type { TagInputProps } from "../../../types/Tag";
+
 
 export const TagInput = ({ onSubmit, onBackspace }: TagInputProps) => {
   return (

@@ -1,7 +1,5 @@
-interface HashTagChipProps {
-  label: string;
-  onRemove?: () => void;
-}
+import type { HashTagChipProps } from "../../../types/Tag";
+
 
 export const HashTagChip = ({ label, onRemove }: HashTagChipProps) => {
   return (

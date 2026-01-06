@@ -1,46 +1,6 @@
 import { IngredientCard } from "./IngredientCard";
 import { IngredientList } from "./IngredientList";
-import type { Ingredient, IngredientUnit } from "../../../types/Ingredient";
-
-interface UseIngredientReturn {
-  activeIndex: number;
-  wrapperRef: React.RefObject<HTMLDivElement | null>;
-  sliced: any[];
-  name: string;
-  amount: string;
-  unit: IngredientUnit;
-  kcal: string;
-  setName: (v: string) => void;
-  setAmount: (v: string) => void;
-  setUnit: (v: IngredientUnit) => void;
-  setKcal: (v: string) => void;
-  handleManualAdd: () => void;
-  onSelect: (item: any) => void;
-  handleKeyDown: (e: React.KeyboardEvent) => void;
-}
-
-interface IngredientEditorProps {
-  ingredients: Ingredient[];
-  totalKcal: number;
-  settings: {
-    showIngredients: boolean;
-    showKcal: boolean;
-  };
-  onRemove: (id: number) => void;
-
-  // 검색 입력 상태
-  searchValues: {
-    query: string;
-    setQuery: (q: string) => void;
-    isSearching: boolean;
-  };
-
-  // 재료 검색 리스트 props
-  ingredientListProps: UseIngredientReturn;
-
-  // 설정 토글 함수
-  onToggle: (key: "showIngredients" | "showKcal") => void;
-}
+import type { IngredientEditorProps } from "../../../types/Ingredient";
 
 export const IngredientEditor = ({
   ingredients,

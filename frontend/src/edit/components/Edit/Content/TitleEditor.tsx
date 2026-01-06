@@ -1,17 +1,6 @@
-import type { RefObject } from "react";
+import type { TitleEditorProps } from "../../../types/Title";
 
-interface TitleEditorProps {
-  title: string;
-  ref: RefObject<HTMLTextAreaElement | null>;
-  handleChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  handleKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
-  currentLength: number;
-    
-  // 설정용 props
-  placeholder?: string;
-  maxLength?: number;
-  showCount?: boolean;
-}
+
 
 export const TitleEditor = ({
   title,
