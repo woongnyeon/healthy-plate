@@ -10,7 +10,7 @@ export const EditActionBar = ({
   submitDisabled = false,
 }: EditActionBarProps) => {
   return (
-    <div className="sticky bottom-0 z-30">
+    <div className="">
       {/* 배경 + 상단 경계선(떠있는 느낌) */}
       <div className="bg-white/90 backdrop-blur border-t border-gray-100">
         <div className="mx-auto max-w-[720px] px-2 py-4 flex justify-end gap-3">
