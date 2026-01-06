@@ -7,16 +7,14 @@ type EditorIngredient = Ingredient;
 const LOCAL_STORAGE_KEY = "recipe-editor-draft";
 
 export interface RecipeEditorState {
-  // ===== Editor(Client) State =====
+  // ===== 클라이언트 상태 정의 =====
   title: string;
   tags: string[];
   ingredients: EditorIngredient[];
   contentHtml: string;
-
-  // ===== Derived =====
   totalKcal: number;
 
-  // ===== Actions =====
+  // ===== 액션 =====
   setTitle: (title: string) => void;
 
   addTag: (tag: string) => void;
@@ -32,6 +30,14 @@ export interface RecipeEditorState {
   // 임시 저장 (Local Storage)
   saveToLocalStorage: () => void;
   loadFromLocalStorage: () => boolean; // 성공 여부 반환
+
+  // 표시 설정 관련 상태
+  settings: {
+    showIngredients: boolean;
+    showKcal: boolean;
+  }
+
+  toggleSetting: (key: "showIngredients" | "showKcal") => void;
 
   // 편집 상태 초기화
   reset: () => void;
@@ -54,6 +60,10 @@ const initialState = {
   ingredients: [] as EditorIngredient[],
   contentHtml: "",
   totalKcal: 0,
+  settings: {
+    showIngredients: true,
+    showKcal: true,
+  },
 };
 
 export const useRecipeEditorStore = create<RecipeEditorState>()(
@@ -107,8 +117,8 @@ export const useRecipeEditorStore = create<RecipeEditorState>()(
     setContentHtml: (contentHtml) => set({ contentHtml }),
 
     saveToLocalStorage: () => {
-      const { title, tags, ingredients, contentHtml } = get();
-      const draft = { title, tags, ingredients, contentHtml };
+      const { title, tags, ingredients, contentHtml, settings } = get();
+      const draft = { title, tags, ingredients, contentHtml, settings };
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(draft));
       alert("임시 저장되었습니다.");
     },
@@ -126,12 +136,23 @@ export const useRecipeEditorStore = create<RecipeEditorState>()(
           ingredients: parsed.ingredients || [],
           contentHtml: parsed.contentHtml || "",
           totalKcal: computeTotalKcal(parsed.ingredients || []),
+          settings: parsed.settings || state.settings,
         }));
         return true;
       } catch (e) {
         console.error("Failed to load draft", e);
         return false;
       }
+    },
+
+    // toggle로 보여줄 지 말지 결정
+    toggleSetting: (key) => {
+      set((state) => ({
+        settings: {
+          ...state.settings,
+          [key]: !state.settings[key],
+        }
+      }))
     },
 
     reset: () => set({ ...initialState }),
