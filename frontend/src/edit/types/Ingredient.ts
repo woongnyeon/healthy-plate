@@ -40,9 +40,73 @@ export interface IngredientSearchItem {
 export interface IngredientListProps {
   query: string;
   isOpen: boolean;
-  items: IngredientSearchItem[];
+    
+  // 상태
+  activeIndex: number;
+  sliced: IngredientSearchItem[];
+  wrapperRef: React.RefObject<HTMLDivElement | null>;
+  name: string;
+  amount: string;
+  unit: IngredientUnit;
+  kcal: string;
+  setName: (v: string) => void;
+  setAmount: (v: string) => void;
+  setUnit: (v: IngredientUnit) => void;
+  setKcal: (v: string) => void;
+  handleManualAdd: () => void;
+  
+  // 콜백
   onSelect: (item: IngredientSearchItem) => void;
-  onClose?: () => void;
-  onManualAdd?: (payload: {name: string; amount: string; unit: IngredientUnit; kcal: string;}) => void;
 }
 
+export interface UseIngredientReturn {
+  activeIndex: number;
+  wrapperRef: React.RefObject<HTMLDivElement | null>;
+  sliced: IngredientSearchItem[];
+  name: string;
+  amount: string;
+  unit: IngredientUnit;
+  kcal: string;
+  setName: (v: string) => void;
+  setAmount: (v: string) => void;
+  setUnit: (v: IngredientUnit) => void;
+  setKcal: (v: string) => void;
+  handleManualAdd: () => void;
+  onSelect: (item: IngredientSearchItem) => void;
+  handleKeyDown: (e: React.KeyboardEvent) => void;
+}
+
+export interface IngredientEditorProps {
+  ingredients: Ingredient[];
+  totalKcal: number;
+  settings: {
+    showIngredients: boolean;
+    showKcal: boolean;
+  };
+  onRemove: (id: number) => void;
+
+  // 검색 입력 상태
+  searchValues: {
+    query: string;
+    setQuery: (q: string) => void;
+    isSearching: boolean;
+  };
+
+  // 재료 검색 리스트 props
+  ingredientListProps: UseIngredientReturn;
+
+  // 설정 토글 함수
+  onToggle: (key: "showIngredients" | "showKcal") => void;
+}
+
+export interface IngredientCardProps {
+  ingredients: Ingredient[];
+  totalKcal: number;
+  // 설정 (보이기 여부)
+  settings?: {
+    showIngredients: boolean;
+    showKcal: boolean;
+  };
+  onRemove: (id: number) => void;
+  onToggle: (key: "showIngredients" | "showKcal") => void;
+}
