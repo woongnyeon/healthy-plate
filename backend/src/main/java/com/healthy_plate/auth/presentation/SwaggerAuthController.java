@@ -1,7 +1,7 @@
 package com.healthy_plate.auth.presentation;
 
-import com.healthy_plate.auth.presentation.dto.TokenResponse;
 import com.healthy_plate.auth.presentation.dto.RegisterUserProfileRequest;
+import com.healthy_plate.auth.presentation.dto.TokenResponse;
 import com.healthy_plate.shared.error.ErrorResponse;
 import com.healthy_plate.shared.s3.PresignedUrlRequest;
 import com.healthy_plate.shared.s3.PresignedUrlResponse;
@@ -62,6 +62,50 @@ public interface SwaggerAuthController {
             )
         }
     )
+    ResponseEntity<TokenResponse> onBoardingAccessToken(HttpServletRequest request);
+
+    @Operation(
+        summary = "액세스 토큰 갱신",
+        tags = "인증",
+        description = "리프레시 토큰을 사용하여 새로운 액세스 토큰을 발급합니다.",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "토큰 갱신 성공",
+                content = @Content(
+                    schema = @Schema(implementation = TokenResponse.class)
+                )
+            ),
+            @ApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청 (refresh_token 쿠키 없음)",
+                content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class)
+                )
+            ),
+            @ApiResponse(
+                responseCode = "401",
+                description = "유효하지 않거나 만료된 리프레시 토큰",
+                content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class)
+                )
+            ),
+            @ApiResponse(
+                responseCode = "403",
+                description = "프로필 등록이 필요합니다",
+                content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class)
+                )
+            ),
+            @ApiResponse(
+                responseCode = "404",
+                description = "사용자를 찾을 수 없습니다",
+                content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class)
+                )
+            )
+        }
+    )
     ResponseEntity<TokenResponse> getAccessToken(HttpServletRequest request);
 
     @Operation(
@@ -69,27 +113,27 @@ public interface SwaggerAuthController {
         tags = "인증",
         description = """
             회원가입 시 프로필 이미지를 업로드하기 위한 Presigned URL을 생성합니다.
-
+            
             **요청 형식:**
             - Content-Type: application/json
             - Body: { "contentType": "image/jpeg", "fileSize": 2097152 }
-
+            
             **지원하는 이미지 형식:**
             - JPEG (image/jpeg)
             - PNG (image/png)
             - WEBP (image/webp)
-
+            
             **파일 크기 제한:**
             - 최대 5MB (5,242,880 bytes)
             - 프론트엔드와 백엔드 모두에서 검증
-
+            
             **사용 순서:**
             1. 프론트엔드에서 파일 선택 시 file.type과 file.size 가져오기
             2. 프론트엔드에서 파일 크기 체크 (5MB 이하인지 확인)
             3. 이 API를 JSON으로 호출하여 presignedUrl과 fileUrl을 받습니다
             4. presignedUrl로 이미지를 S3에 직접 PUT 업로드합니다
             5. PATCH /api/auth/register 호출 시 fileUrl을 profileImageUrl에 포함합니다
-
+            
             **인증:** refresh_token 쿠키 사용 (회원가입 전이므로 accessToken 없음)
             """,
         responses = {
@@ -124,8 +168,8 @@ public interface SwaggerAuthController {
         }
     )
     ResponseEntity<PresignedUrlResponse> getPresignedUrl(
-            @Valid @RequestBody PresignedUrlRequest request,
-            HttpServletRequest httpRequest
+        @Valid @RequestBody PresignedUrlRequest request,
+        HttpServletRequest httpRequest
     );
 
     @Operation(
@@ -133,15 +177,15 @@ public interface SwaggerAuthController {
         tags = "인증",
         description = """
             OAuth2 로그인 후 사용자의 프로필을 등록하고 액세스 토큰을 반환합니다.
-
+            
             **이미지 업로드 방법:**
             1. POST /api/auth/profile-image/presigned-url로 업로드 URL 받기
             2. 받은 presignedUrl로 이미지를 S3에 직접 PUT 업로드
             3. 이 API 호출 시 fileUrl을 profileImageUrl에 포함
-
+            
             **필수:** nickname (2-50자)
             **선택:** profileImageUrl (S3 URL), introduction (최대 500자)
-
+            
             **인증:** refresh_token 쿠키 사용
             """,
         responses = {

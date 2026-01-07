@@ -38,6 +38,16 @@ public class AuthController implements SwaggerAuthController {
     @Value("${app.cookie.secure}")
     private boolean cookieSecure;
 
+    @PostMapping("/onboarding")
+    public ResponseEntity<TokenResponse> onBoardingAccessToken(
+        final HttpServletRequest request
+    ) {
+        final String refreshToken = CookieUtil.findRefreshTokenWithCookie(request.getCookies());
+        final String newAccessToken = authService.generateAccessToken(refreshToken);
+
+        return ResponseEntity.ok(new TokenResponse(newAccessToken));
+    }
+
     @PostMapping("/token")
     public ResponseEntity<TokenResponse> getAccessToken(
         final HttpServletRequest request
