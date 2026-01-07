@@ -21,6 +21,29 @@ public class AuthService {
     private final UserRepository userRepository;
 
     @Transactional
+    public String generateOnboardingAccessToken(final String refreshTokenValue) {
+        if (!jwtTokenProvider.validateToken(refreshTokenValue)) {
+            throw new CustomAuthenticationException(AuthenticationErrorCode.INVALID_REFRESH_TOKEN);
+        }
+        final RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenValue)
+            .orElseThrow(() -> new CustomAuthenticationException(AuthenticationErrorCode.REFRESH_TOKEN_NOT_FOUND));
+
+        if (refreshToken.isExpired()) {
+            refreshTokenRepository.deleteByToken(refreshTokenValue);
+            throw new CustomAuthenticationException(AuthenticationErrorCode.EXPIRED_REFRESH_TOKEN);
+        }
+        final User user = userRepository.findById(refreshToken.getUserId())
+            .orElseThrow(() -> new CustomAuthenticationException(BusinessErrorCode.USER_NOT_FOUND));
+
+        return jwtTokenProvider.generateAccessToken(
+            user.getId(),
+            user.getEmail().getValue(),
+            user.getRole()
+        );
+    }
+
+
+    @Transactional
     public String generateAccessToken(final String refreshTokenValue) {
         if (!jwtTokenProvider.validateToken(refreshTokenValue)) {
             throw new CustomAuthenticationException(AuthenticationErrorCode.INVALID_REFRESH_TOKEN);
@@ -66,22 +89,14 @@ public class AuthService {
     }
 
     @Transactional
-    public String registerUserInfo(
-        final String refreshTokenValue,
+    public void registerUserInfo(
+        final User user,
         final String nickname,
         final String profileImageUrl,
         final String introduction
     ) {
-        final User user = getUserFromRefreshToken(refreshTokenValue);
-
         user.updateProfile(nickname, profileImageUrl, introduction);
         userRepository.save(user);
-
-        return jwtTokenProvider.generateAccessToken(
-            user.getId(),
-            user.getEmail().getValue(),
-            user.getRole()
-        );
     }
 
     @Transactional

@@ -17,6 +17,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,7 +44,7 @@ public class AuthController implements SwaggerAuthController {
         final HttpServletRequest request
     ) {
         final String refreshToken = CookieUtil.findRefreshTokenWithCookie(request.getCookies());
-        final String newAccessToken = authService.generateAccessToken(refreshToken);
+        final String newAccessToken = authService.generateOnboardingAccessToken(refreshToken);
 
         return ResponseEntity.ok(new TokenResponse(newAccessToken));
     }
@@ -76,19 +77,18 @@ public class AuthController implements SwaggerAuthController {
     }
 
     @PatchMapping("/register")
-    public ResponseEntity<TokenResponse> registerUserInfo(
+    public ResponseEntity<Void> registerUserInfo(
         @Valid @RequestBody final RegisterUserProfileRequest request,
-        final HttpServletRequest httpRequest
+        @AuthenticationPrincipal final User user
     ) {
-        final String refreshToken = CookieUtil.findRefreshTokenWithCookie(httpRequest.getCookies());
-        final String accessToken = authService.registerUserInfo(
-            refreshToken,
+        authService.registerUserInfo(
+            user,
             request.nickname(),
             request.profileImageUrl(),
             request.introduction()
         );
 
-        return ResponseEntity.ok(new TokenResponse(accessToken));
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/logout")
