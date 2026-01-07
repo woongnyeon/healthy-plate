@@ -52,9 +52,9 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
         updateUserLastLogin(user);
 
-        final String refreshToken = jwtTokenProvider.generateRefreshToken(oauth2User.getUserId());
+        final String newRefreshToken = jwtTokenProvider.generateRefreshToken(oauth2User.getUserId());
 
-        refreshTokenService.saveRefreshToken(oauth2User.getUserId(), refreshToken, jwtProperties.refreshTokenExpiration());
+        String refreshToken = refreshTokenService.saveRefreshToken(oauth2User.getUserId(), newRefreshToken, jwtProperties.refreshTokenExpiration());
         addRefreshTokenCookies(response, refreshToken);
 
         final String redirectUrl = UriComponentsBuilder.fromUriString(targetUrl)
