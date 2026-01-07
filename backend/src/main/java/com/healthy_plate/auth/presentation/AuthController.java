@@ -79,10 +79,10 @@ public class AuthController implements SwaggerAuthController {
     @PatchMapping("/register")
     public ResponseEntity<Void> registerUserInfo(
         @Valid @RequestBody final RegisterUserProfileRequest request,
-        @AuthenticationPrincipal final User user
+        @AuthenticationPrincipal final Long userId
     ) {
         authService.registerUserInfo(
-            user,
+            userId,
             request.nickname(),
             request.profileImageUrl(),
             request.introduction()

@@ -69,7 +69,8 @@ public class JwtTokenProvider {
             .parseSignedClaims(token)
             .getPayload();
 
-        return UserRole.valueOf(claims.get("role", String.class));
+        String roleString = claims.get("role", String.class);
+        return roleString != null ? UserRole.valueOf(roleString) : null;
     }
 
     public boolean validateToken(String token) {

@@ -224,7 +224,7 @@ public interface SwaggerAuthController {
     )
     ResponseEntity<Void> registerUserInfo(
         @Valid @RequestBody RegisterUserProfileRequest request,
-        @AuthenticationPrincipal User user
+        @AuthenticationPrincipal Long userId
     );
 
     @Operation(

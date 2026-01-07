@@ -90,11 +90,14 @@ public class AuthService {
 
     @Transactional
     public void registerUserInfo(
-        final User user,
+        final Long userId,
         final String nickname,
         final String profileImageUrl,
         final String introduction
     ) {
+        final User user = userRepository.findById(userId)
+            .orElseThrow(() -> new CustomAuthenticationException(BusinessErrorCode.USER_NOT_FOUND));
+
         user.updateProfile(nickname, profileImageUrl, introduction);
         userRepository.save(user);
     }
