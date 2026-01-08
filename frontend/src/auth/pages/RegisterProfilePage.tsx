@@ -14,7 +14,7 @@ import { useNicknameCheck } from "../hooks/useNicknameCheck";
 
 export const RegisterProfilePage = () => {
   const navigate = useNavigate();
-  const { handeSignup } = useAuth();
+  const { handleSignup } = useAuth();
 
   const [nickname, setNickname] = useState("");
   const [desc, setDesc] = useState(
@@ -39,6 +39,9 @@ export const RegisterProfilePage = () => {
     previewUrl,
     pick,
     onChange: onFileChange,
+    isUploading,
+    uploadError,
+    uploadedUrl,
   } = useProfileImage();
 
   const submit = async () => {
@@ -59,10 +62,10 @@ export const RegisterProfilePage = () => {
     }
 
     // ✅ 가입 요청
-    handeSignup({
+    handleSignup({
       nickname: nicknameValidation.value,
       introduction: descValidation?.value, // 필요하면 value 사용
-      // profileImage: file,               // 필요하면 추가
+      profileImageUrl: uploadedUrl ?? undefined,               // 필요하면 추가
     });
   };
 
@@ -70,14 +73,18 @@ export const RegisterProfilePage = () => {
     <div className="mt-20 min-h-screen bg-bg px-8 py-10">
       <div className="max-w-[1200px] mx-auto">
         <div className="mb-10">
-          <h1 className="text-4xl font-extrabold leading-tight">
-            만나서 반가워요!
-            <br />
-            셰프님을 소개해 주세요
-          </h1>
-          <p className="mt-3 text-gray-500">
-            멋진 프로필 사진과 소개로 나만의 키친을 꾸며보세요.
-          </p>
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-4xl font-extrabold leading-tight">
+                만나서 반가워요!
+                <br />
+                셰프님을 소개해 주세요
+              </h1>
+              <p className="mt-3 text-gray-500">
+                멋진 프로필 사진과 소개로 나만의 키친을 꾸며보세요.
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-12 gap-10 items-start">
@@ -88,7 +95,11 @@ export const RegisterProfilePage = () => {
               onPick={pick}
               fileRef={fileRef}
               onFileChange={onFileChange}
+              isUploading={isUploading}
             />
+            {uploadError && (
+              <p className="mt-2 text-sm text-red-500 text-center">{uploadError}</p>
+            )}
           </div>
 
           <div className="col-span-8">
