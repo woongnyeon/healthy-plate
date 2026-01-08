@@ -5,7 +5,6 @@ import com.healthy_plate.auth.presentation.dto.TokenResponse;
 import com.healthy_plate.shared.error.ErrorResponse;
 import com.healthy_plate.shared.s3.PresignedUrlRequest;
 import com.healthy_plate.shared.s3.PresignedUrlResponse;
-import com.healthy_plate.user.domain.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -44,13 +43,6 @@ public interface SwaggerAuthController {
             @ApiResponse(
                 responseCode = "401",
                 description = "유효하지 않거나 만료된 리프레시 토큰",
-                content = @Content(
-                    schema = @Schema(implementation = ErrorResponse.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "403",
-                description = "프로필 등록이 필요합니다",
                 content = @Content(
                     schema = @Schema(implementation = ErrorResponse.class)
                 )
