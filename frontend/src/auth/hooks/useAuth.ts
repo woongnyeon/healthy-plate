@@ -36,11 +36,14 @@ export const useAuth = () => {
   }, [loginMutation, queryClient, userInfo]);
 
   const handleOnBoarding = useCallback(async () => {
-    const response = await onBoardingMutation.mutateAsync();
-    await queryClient.invalidateQueries({ queryKey: ["userInfo"] });
+    await onBoardingMutation.mutateAsync();
+    const userData = await queryClient.fetchQuery({
+      queryKey: ["userInfo"],
+      queryFn: () => userInfo(),
+    });
     window.dispatchEvent(new Event("storage"));
-    return response.user;
-  }, [onBoardingMutation, queryClient]);
+    return userData;
+  }, [onBoardingMutation, queryClient, userInfo]);
 
   const handleSignup = useCallback((data: SignUpRequest) => {
     signupMutation.mutate(data, {
