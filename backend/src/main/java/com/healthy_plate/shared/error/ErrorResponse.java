@@ -12,7 +12,7 @@ public class ErrorResponse {
     @Schema(description = "HTTP 상태 코드")
     private final int status;
 
-    @Schema(description = "오류 코드 (A1xx: 인증/인가, B1xx: 비즈니스")
+    @Schema(description = "오류 코드 (A1xx: 인증/인가, B1xx: 비즈니스)")
     private final String code;
 
     @Schema(description = "오류 메시지")
