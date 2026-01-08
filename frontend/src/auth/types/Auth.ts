@@ -1,5 +1,5 @@
 export interface LoginResponse {
-  accessToken: string;
+  access_token: string;
   user: UserInfo;
 }
 
@@ -17,9 +17,19 @@ export interface Profile {
 }
 
 export interface SignUpRequest {
-  profileImage?: File | null;
+  profileImageUrl?: string | null;
   nickname: string;
   introduction?: string | null;
 }
 
 export interface SignUpResponse extends LoginResponse {}
+
+export interface PresignedUrlRequest {
+  contentType: string;
+  fileSize: number;
+}
+
+export interface PresignedUrlResponse {
+  presignedUrl: string;
+  fileUrl: string;
+}
