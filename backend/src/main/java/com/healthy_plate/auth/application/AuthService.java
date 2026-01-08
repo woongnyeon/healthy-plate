@@ -21,7 +21,34 @@ public class AuthService {
     private final UserRepository userRepository;
 
     @Transactional
+    public String generateOnboardingAccessToken(final String refreshTokenValue) {
+        final User user = validateAndGetUserFromRefreshToken(refreshTokenValue);
+
+        return jwtTokenProvider.generateAccessToken(
+            user.getId(),
+            user.getEmail().getValue(),
+            user.getRole()
+        );
+    }
+
+
+    @Transactional
     public String generateAccessToken(final String refreshTokenValue) {
+        final User user = validateAndGetUserFromRefreshToken(refreshTokenValue);
+
+        // 프로필 미등록 사용자 차단
+        if (user.isFirstLogin()) {
+            throw new CustomAuthenticationException(AuthenticationErrorCode.PROFILE_REGISTRATION_REQUIRED);
+        }
+
+        return jwtTokenProvider.generateAccessToken(
+            user.getId(),
+            user.getEmail().getValue(),
+            user.getRole()
+        );
+    }
+
+    private User validateAndGetUserFromRefreshToken(String refreshTokenValue) {
         if (!jwtTokenProvider.validateToken(refreshTokenValue)) {
             throw new CustomAuthenticationException(AuthenticationErrorCode.INVALID_REFRESH_TOKEN);
         }
@@ -34,17 +61,7 @@ public class AuthService {
         }
         final User user = userRepository.findById(refreshToken.getUserId())
             .orElseThrow(() -> new CustomAuthenticationException(BusinessErrorCode.USER_NOT_FOUND));
-
-        // 프로필 미등록 사용자 차단
-        if (user.isFirstLogin()) {
-            throw new CustomAuthenticationException(AuthenticationErrorCode.PROFILE_REGISTRATION_REQUIRED);
-        }
-
-        return jwtTokenProvider.generateAccessToken(
-            user.getId(),
-            user.getEmail().getValue(),
-            user.getRole()
-        );
+        return user;
     }
 
     @Transactional
@@ -66,22 +83,17 @@ public class AuthService {
     }
 
     @Transactional
-    public String registerUserInfo(
-        final String refreshTokenValue,
+    public void registerUserInfo(
+        final Long userId,
         final String nickname,
         final String profileImageUrl,
         final String introduction
     ) {
-        final User user = getUserFromRefreshToken(refreshTokenValue);
+        final User user = userRepository.findById(userId)
+            .orElseThrow(() -> new CustomAuthenticationException(BusinessErrorCode.USER_NOT_FOUND));
 
         user.updateProfile(nickname, profileImageUrl, introduction);
         userRepository.save(user);
-
-        return jwtTokenProvider.generateAccessToken(
-            user.getId(),
-            user.getEmail().getValue(),
-            user.getRole()
-        );
     }
 
     @Transactional

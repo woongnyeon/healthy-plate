@@ -21,6 +21,9 @@ public class CookieUtil {
     }
 
     public static String findRefreshTokenWithCookie(final Cookie[] cookies) {
+        if (cookies == null) {
+            throw new IllegalArgumentException("Cookie를 찾을 수 없습니다.");
+        }
         return Arrays.stream(cookies)
             .filter(cookie -> cookie.getName().equals(REFRESH_TOKEN_NAME))
             .findFirst()

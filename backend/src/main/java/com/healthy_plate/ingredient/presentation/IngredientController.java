@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/ingredients")
 @RequiredArgsConstructor
-public class IngredientController {
+public class IngredientController implements SwaggerIngredientController {
 
     private final IngredientService ingredientService;
 

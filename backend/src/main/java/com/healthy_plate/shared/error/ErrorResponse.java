@@ -9,22 +9,22 @@ import lombok.Getter;
 @Getter
 public class ErrorResponse {
 
-    @Schema(description = "HTTP 상태 코드", example = "401")
+    @Schema(description = "HTTP 상태 코드")
     private final int status;
 
-    @Schema(description = "오류 코드 (A1xx: 인증/인가, B1xx: 비즈니스)", example = "A108")
+    @Schema(description = "오류 코드 (A1xx: 인증/인가, B1xx: 비즈니스)")
     private final String code;
 
-    @Schema(description = "오류 메시지", example = "유효하지 않은 Access Token 입니다.")
+    @Schema(description = "오류 메시지")
     private final String message;
 
-    @Schema(description = "요청 HTTP 메서드", example = "GET")
+    @Schema(description = "요청 HTTP 메서드")
     private final String method;
 
-    @Schema(description = "요청 경로", example = "/api/users")
+    @Schema(description = "요청 경로")
     private final String path;
 
-    @Schema(description = "오류 발생 시간", example = "2023-10-01T12:00:00")
+    @Schema(description = "오류 발생 시간")
     private final LocalDateTime timestamp;
 
     public ErrorResponse(int status, String code, String message, String method, String path) {

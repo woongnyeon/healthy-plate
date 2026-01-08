@@ -17,6 +17,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +38,16 @@ public class AuthController implements SwaggerAuthController {
 
     @Value("${app.cookie.secure}")
     private boolean cookieSecure;
+
+    @PostMapping("/onboarding")
+    public ResponseEntity<TokenResponse> onBoardingAccessToken(
+        final HttpServletRequest request
+    ) {
+        final String refreshToken = CookieUtil.findRefreshTokenWithCookie(request.getCookies());
+        final String newAccessToken = authService.generateOnboardingAccessToken(refreshToken);
+
+        return ResponseEntity.ok(new TokenResponse(newAccessToken));
+    }
 
     @PostMapping("/token")
     public ResponseEntity<TokenResponse> getAccessToken(
@@ -66,19 +77,18 @@ public class AuthController implements SwaggerAuthController {
     }
 
     @PatchMapping("/register")
-    public ResponseEntity<TokenResponse> registerUserInfo(
+    public ResponseEntity<Void> registerUserInfo(
         @Valid @RequestBody final RegisterUserProfileRequest request,
-        final HttpServletRequest httpRequest
+        @AuthenticationPrincipal final Long userId
     ) {
-        final String refreshToken = CookieUtil.findRefreshTokenWithCookie(httpRequest.getCookies());
-        final String accessToken = authService.registerUserInfo(
-            refreshToken,
+        authService.registerUserInfo(
+            userId,
             request.nickname(),
             request.profileImageUrl(),
             request.introduction()
         );
 
-        return ResponseEntity.ok(new TokenResponse(accessToken));
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/logout")
