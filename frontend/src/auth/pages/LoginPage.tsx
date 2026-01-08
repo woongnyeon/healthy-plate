@@ -27,6 +27,7 @@ export const LoginPage = () => {
             className="flex items-center justify-center gap-2 rounded-full bg-[#FEE500] text-black py-3 font-medium hover:brightness-95 transition"
             onClick={() => {
               // TODO: 카카오 OAuth
+              navigate("http://localhost:8080/oauth2/authorization/kakao")
             }}
           >
             <span>💬</span>
@@ -38,6 +39,7 @@ export const LoginPage = () => {
             className="flex items-center justify-center gap-2 rounded-full bg-[#03C75A] text-white py-3 font-medium hover:brightness-95 transition"
             onClick={() => {
               // TODO: 네이버 OAuth
+              navigate("http://localhost:8080/oauth2/authorization/naver")
             }}
           >
             <span className="font-bold">N</span>
