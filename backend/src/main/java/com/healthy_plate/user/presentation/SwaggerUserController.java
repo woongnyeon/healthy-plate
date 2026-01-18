@@ -60,6 +60,13 @@ public interface SwaggerUserController {
                 content = @Content(
                     schema = @Schema(implementation = Boolean.class)
                 )
+            ),
+            @ApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청 (닉네임이 비어있거나 공백인 경우)",
+                content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class)
+                )
             )
         }
     )

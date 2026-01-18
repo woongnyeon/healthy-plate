@@ -2,6 +2,7 @@ package com.healthy_plate.shared.error;
 
 import com.healthy_plate.shared.error.exception.BusinessException;
 import com.healthy_plate.shared.error.exception.CustomAuthenticationException;
+import com.healthy_plate.shared.error.exception.S3Exception;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,22 @@ public class GlobalExceptionHandler {
         final HttpServletRequest request
     ) {
         log.warn("Business Exception - URI '{} {}' ", request.getMethod(), request.getRequestURI(), e);
+        final HttpStatus httpStatus = e.getErrorCode().getStatus();
+        final ErrorResponse errorResponse = new ErrorResponse(
+            httpStatus.value(),
+            e.getErrorCode(),
+            request.getMethod(),
+            request.getRequestURI()
+        );
+        return ResponseEntity.status(httpStatus).body(errorResponse);
+    }
+
+    @ExceptionHandler(S3Exception.class)
+    public ResponseEntity<ErrorResponse> handleS3Exception(
+        final S3Exception e,
+        final HttpServletRequest request
+    ) {
+        log.warn("S3 Exception - URI '{} {}' ", request.getMethod(), request.getRequestURI(), e);
         final HttpStatus httpStatus = e.getErrorCode().getStatus();
         final ErrorResponse errorResponse = new ErrorResponse(
             httpStatus.value(),
