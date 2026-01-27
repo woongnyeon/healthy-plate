@@ -24,6 +24,9 @@ public class Ingredient extends BaseEntity {
     @Column(name = "ingredient_id")
     private Long id;
 
+    @Column(name = "registered_id")
+    private Long registerId;
+
     @Column(name = "name", length = 100, nullable = false, unique = true)
     private String name;
 
@@ -44,11 +47,9 @@ public class Ingredient extends BaseEntity {
     @Column(name = "registration_type", length = 20, nullable = false)
     private RegistrationType registrationType = RegistrationType.SYSTEM;
 
-    @Column(name = "registered_id")
-    private Long registerId;
-
     @Column(name = "is_verified", nullable = false)
     private Boolean isVerified;
+
 
     public Ingredient(
         final String name,
@@ -59,15 +60,15 @@ public class Ingredient extends BaseEntity {
         final RegistrationType registrationType,
         final boolean isVerified,
         final Long registerId
-    ) {
+        ) {
         this.name = name;
         this.nameEn = nameEn;
         this.calorie = calorie;
         this.servingSize = servingSize;
         this.unit = unit;
         this.registrationType = registrationType;
-        this.registerId = registerId;
         this.isVerified = isVerified;
+        this.registerId = registerId;
     }
 
     public static Ingredient createSystemIngredient(
