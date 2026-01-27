@@ -27,7 +27,8 @@ export const LoginPage = () => {
             className="flex items-center justify-center gap-2 rounded-full bg-[#FEE500] text-black py-3 font-medium hover:brightness-95 transition"
             onClick={() => {
               // TODO: 카카오 OAuth
-              navigate("http://localhost:8080/oauth2/authorization/kakao")
+              window.location.href =
+                "http://localhost:8080/oauth2/authorization/kakao";
             }}
           >
             <span>💬</span>
@@ -39,7 +40,8 @@ export const LoginPage = () => {
             className="flex items-center justify-center gap-2 rounded-full bg-[#03C75A] text-white py-3 font-medium hover:brightness-95 transition"
             onClick={() => {
               // TODO: 네이버 OAuth
-              navigate("http://localhost:8080/oauth2/authorization/naver")
+              window.location.href =
+                "http://localhost:8080/oauth2/authorization/naver";
             }}
           >
             <span className="font-bold">N</span>
@@ -51,7 +53,8 @@ export const LoginPage = () => {
             className="flex items-center justify-center gap-2 rounded-full border border-gray-300 py-3 font-medium hover:bg-gray-50 transition"
             onClick={() => {
               // TODO: 구글 OAuth
-              navigate("http://localhost:8080/oauth2/authorization/google");
+              window.location.href =
+                "http://localhost:8080/oauth2/authorization/google";
             }}
           >
             <img src="/icons/google.svg" alt="google" className="w-5 h-5" />
