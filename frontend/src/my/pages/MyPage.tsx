@@ -1,7 +1,7 @@
 import { DraftSection } from "../components/DraftSection/DraftSection";
 import { LikeRecipeSection } from "../components/LikeRecipeSection/LikeRecipeSection";
 
-import { Profile } from "../components/Profile";
+import { Profile } from "../components/Profile/Profile";
 import { StatisticsSection } from "../components/SatisticsSection/SatisticsSection";
 import { StatisticsCard } from "../components/SatisticsSection/StatisticsCard";
 import { WeekSatisticsSection } from "../components/WeekSatisticsSection/WeekSatisticsSection";

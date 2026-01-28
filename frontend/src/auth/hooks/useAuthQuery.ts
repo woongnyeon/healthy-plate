@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuthApi } from "./useAuthApi";
-import type { SignUpRequest } from "../types/Auth";
+import type { SignUpRequest, PresignedUrlRequest } from "../types/Auth";
 import { getAccessToken } from "../../lib/tokenStorage";
 
 export const useLoginMutation = () => {
@@ -16,6 +16,23 @@ export const useLoginMutation = () => {
     },
     onError: (error) => {
       console.log("로그인 실패", error);
+    },
+  });
+};
+
+export const useOnBoardingMutation = () => {
+  const { onBoarding } = useAuthApi();
+
+  return useMutation({
+    mutationFn: async () => {
+      const result = await onBoarding();
+      return result;
+    },
+    onSuccess: () => {
+      console.log("온보딩 성공");
+    },
+    onError: (error) => {
+      console.log("온보딩 실패", error);
     },
   });
 };
@@ -49,15 +66,31 @@ export const useLogoutMutation = () => {
   });
 };
 
-export const useGetUserInfo = () => {
+// useAuthQuery.ts
+export const useGetUserInfo = (enabled: boolean) => {
   const access_token = getAccessToken();
   const { userInfo } = useAuthApi();
+
   return useQuery({
     queryKey: ["userInfo"],
-    enabled: !!access_token,
-    queryFn: async () => {
-      const result = await userInfo();
-      return result;
-    },
+    enabled: enabled && !!access_token,
+    queryFn: userInfo,
   });
 };
+
+
+export const usePreSignedUrlMutation = () => {
+    const { preSignedUrl } = useAuthApi();
+    return useMutation({
+      mutationFn: async (data: PresignedUrlRequest) => {
+        const result = await preSignedUrl(data);
+        return result;
+      },
+      onSuccess: (data) => {
+        console.log("프로필 이미지 URL 생성 성공", data);
+      },
+      onError: (error) => {
+        console.log("프로필 이미지 URL 생성 실패", error);
+      },
+    });
+  };

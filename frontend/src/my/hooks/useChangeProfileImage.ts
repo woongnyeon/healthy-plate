@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { validateProfileImage } from "../utills/fileValidators";
-import { usePreSignedUrlMutation } from "./useAuthQuery";
+import { usePreSignedUrlMutation } from "../hooks/useMyQuery";
+import { validateProfileImage } from "../../auth/utills/fileValidators";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
-export const useProfileImage = (options?: { onUploadSuccess?: (url: string) => void }) => {
+export const useChangeProfileImage = (options?: {
+  onUploadSuccess?: (url: string) => void;
+}) => {
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -26,8 +28,8 @@ export const useProfileImage = (options?: { onUploadSuccess?: (url: string) => v
 
   const pick = () => fileRef.current?.click();
 
-  const upload = async (selectedFile?: File): Promise<string | null> => {
-    const fileToUpload = selectedFile || file;
+  const upload = async (selcetedFile?: File): Promise<string | null> => {
+    const fileToUpload = selcetedFile || file;
     if (!fileToUpload) {
       setUploadError("업로드할 파일이 없습니다.");
       return null;
@@ -58,12 +60,14 @@ export const useProfileImage = (options?: { onUploadSuccess?: (url: string) => v
       if (!uploadResponse.ok) {
         throw new Error(`S3 업로드 실패: ${uploadResponse.status}`);
       }
-
       setUploadedUrl(fileUrl);
       options?.onUploadSuccess?.(fileUrl);
       return fileUrl;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "업로드 중 오류가 발생했습니다.";
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "업로드 중 오류가 발생했습니다.";
       setUploadError(errorMessage);
       return null;
     } finally {
@@ -71,7 +75,10 @@ export const useProfileImage = (options?: { onUploadSuccess?: (url: string) => v
     }
   };
 
-  const onChange = async (e: React.ChangeEvent<HTMLInputElement>, autoUpload = false) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    autoUpload = false,
+  ) => {
     const f = e.target.files?.[0];
     if (!f) return;
 
@@ -104,18 +111,13 @@ export const useProfileImage = (options?: { onUploadSuccess?: (url: string) => v
   };
 
   return {
-    // File input
     fileRef,
     file,
     previewUrl,
-    
-    // Actions
     pick,
     onChange,
     upload,
     clear,
-    
-    // States
     isUploading,
     uploadError,
     uploadedUrl,

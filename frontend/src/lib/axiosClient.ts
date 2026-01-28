@@ -1,5 +1,6 @@
 import axios, { type AxiosInstance } from "axios";
 import { clearTokens, updateAccessToken, getAccessToken } from "./tokenStorage";
+import type { LoginResponse } from "../auth/types/Auth";
 
 const axiosClient = axios.create({
   baseURL: "/api",
@@ -11,59 +12,60 @@ console.log(axiosClient.defaults.baseURL);
 const authFreeEndpoints = [
   "/auth/reissue",
   "/auth/token",
-  "/auth/register",
   "/users/duplicate",
   "/oauth2",
   "/login",
+  "/auth/onboarding",
 ];
 
 const setupInterceptors = (client: AxiosInstance, skipAuth = false) => {
   client.interceptors.request.use((config) => {
-    const isFree = authFreeEndpoints.some((endpoint) =>
-      (config.url ?? "").startsWith(endpoint)
-    );
+  const isFree = authFreeEndpoints.some((endpoint) =>
+    (config.url ?? "").includes(endpoint)
+  );
 
-    if (!skipAuth && !isFree) {
-      const accessToken = getAccessToken();
-      if (accessToken) {
-        // ✅ 오타 수정: Beare -> Bearer
-        config.headers.Authorization = `Bearer ${accessToken}`;
-      }
+  if (!skipAuth && !isFree) {
+    const accessToken = getAccessToken();
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
     }
-    return config;
-  });
+  }
+  return config;
+});
+
 
   client.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-      const originalRequest = error.config;
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    const isOnboarding = (originalRequest.url ?? "").includes("/auth/onboarding");
 
-      if (
-        error.response?.status === 401 &&
-        !originalRequest._retry &&
-        !skipAuth
-      ) {
-        originalRequest._retry = true;
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !skipAuth &&
+      !isOnboarding
+    ) {
+      originalRequest._retry = true;
 
-        try {
-          const refreshResponse = await axiosClient.post("/auth/token");
+      try {
+        const refreshResponse = await axiosClient.post<LoginResponse>("/auth/token");
+        // 인터셉터가 다시 전체 응답을 반환하므로 .data.access_token으로 접근합니다.
+        const newAccessToken = refreshResponse.data.access_token;
 
-          const newAccessToken = refreshResponse.data.access_token;
-          console.log(refreshResponse.data.access_token);
-          updateAccessToken(newAccessToken);
-
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-          return client(originalRequest);
-        } catch (refreshError) {
-          console.error("토큰 갱신 실패", refreshError);
-          clearTokens();
-          if (typeof window !== "undefined") window.location.href = "/login";
-        }
+        updateAccessToken(newAccessToken);
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        return client(originalRequest);
+      } catch {
+        clearTokens();
+        window.location.href = "/login";
       }
-
-      return Promise.reject(error);
     }
-  );
+
+    return Promise.reject(error);
+  }
+);
+
 };
 
 setupInterceptors(axiosClient);

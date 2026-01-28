@@ -4,16 +4,21 @@
  */
 
 const TOKEN_KEYS = {
-  ACCESS_TOKEN: "accessToken",
+  ACCESS_TOKEN: "access_token",
 } as const;
 
 /**
  * 토큰을 저장합니다
  */
-export const setTokens = (accessToken: string) => {
+export const setTokens = (access_token: string) => {
   const storage = localStorage;
 
-  storage.setItem(TOKEN_KEYS.ACCESS_TOKEN, accessToken);
+  if (!access_token || access_token === "undefined" || access_token === "null") {
+    clearTokens();
+    return;
+  }
+
+  storage.setItem(TOKEN_KEYS.ACCESS_TOKEN, access_token);
 };
 
 /**
@@ -30,10 +35,10 @@ export const getAccessToken = (): string | null => {
 /**
  * 액세스 토큰을 업데이트합니다 (갱신 시 사용)
  */
-export const updateAccessToken = (accessToken: string) => {
+export const updateAccessToken = (access_token: string) => {
   const storage = localStorage;
 
-  storage.setItem(TOKEN_KEYS.ACCESS_TOKEN, accessToken);
+  storage.setItem(TOKEN_KEYS.ACCESS_TOKEN, access_token);
 };
 
 /**
