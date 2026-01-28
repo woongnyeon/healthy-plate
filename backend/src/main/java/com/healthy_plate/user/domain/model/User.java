@@ -59,7 +59,7 @@ public class User {
 
     private LocalDateTime lastLoginAt;
 
-    public User(
+    private User(
         final Email email,
         final UserProfile profile,
         final OAuth2Provider provider,
@@ -73,6 +73,32 @@ public class User {
         this.providerId = providerId;
         this.role = role;
         this.isActive = isActive;
+    }
+
+    public static User createOAuth2User(
+        final Email email,
+        final OAuth2Provider provider,
+        final String providerId
+    ) {
+        return new User(email, UserProfile.createEmpty(), provider, providerId, UserRole.ROLE_USER, true);
+    }
+
+    public static User createOAuth2UserWithProfile(
+        final Email email,
+        final UserProfile profile,
+        final OAuth2Provider provider,
+        final String providerId
+    ) {
+        return new User(email, profile, provider, providerId, UserRole.ROLE_USER, true);
+    }
+
+    public static User createAdminUser(
+        final Email email,
+        final UserProfile profile,
+        final OAuth2Provider provider,
+        final String providerId
+    ) {
+        return new User(email, profile, provider, providerId, UserRole.ROLE_ADMIN, true);
     }
 
     public void updateProfile(final String nickname, final String profileImageUrl, final String introduction) {

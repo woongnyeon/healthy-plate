@@ -22,10 +22,9 @@ class UserTest {
         UserProfile profile = UserProfile.of("테스트유저", "https://example.com/profile.jpg", "안녕하세요 꿈나무입니다.");
         OAuth2Provider provider = OAuth2Provider.GOOGLE;
         String providerId = "google-123456";
-        UserRole role = UserRole.ROLE_USER;
 
         // when
-        User user = new User(email, profile, provider, providerId, role, true);
+        User user = User.createOAuth2UserWithProfile(email, profile, provider, providerId);
 
         // then
         assertSoftly(softly -> {
@@ -33,7 +32,7 @@ class UserTest {
             softly.assertThat(user.getProfile()).isEqualTo(profile);
             softly.assertThat(user.getProvider()).isEqualTo(provider);
             softly.assertThat(user.getProviderId()).isEqualTo(providerId);
-            softly.assertThat(user.getRole()).isEqualTo(role);
+            softly.assertThat(user.getRole()).isEqualTo(UserRole.ROLE_USER);
         });
     }
 
@@ -42,12 +41,11 @@ class UserTest {
     void createUserWithGoogleProvider() {
         // given
         Email email = Email.from("google@example.com");
-        UserProfile profile = UserProfile.of("구글유저", null, "안녕하세요 꿈나무입니다.");
         OAuth2Provider provider = OAuth2Provider.GOOGLE;
         String providerId = "google-123";
 
         // when
-        User user = new User(email, profile, provider, providerId, UserRole.ROLE_USER, true);
+        User user = User.createOAuth2User(email, provider, providerId);
 
         // then
         assertSoftly(softly -> {
@@ -61,12 +59,11 @@ class UserTest {
     void createUserWithKakaoProvider() {
         // given
         Email email = Email.from("kakao@example.com");
-        UserProfile profile = UserProfile.of("카카오유저", null, "안녕하세요 꿈나무입니다.");
         OAuth2Provider provider = OAuth2Provider.KAKAO;
         String providerId = "kakao-456";
 
         // when
-        User user = new User(email, profile, provider, providerId, UserRole.ROLE_USER, true);
+        User user = User.createOAuth2User(email, provider, providerId);
 
         // then
         assertSoftly(softly -> {
@@ -80,12 +77,11 @@ class UserTest {
     void createUserWithNaverProvider() {
         // given
         Email email = Email.from("naver@example.com");
-        UserProfile profile = UserProfile.of("네이버유저", null, "안녕하세요 꿈나무입니다.");
         OAuth2Provider provider = OAuth2Provider.NAVER;
         String providerId = "naver-789";
 
         // when
-        User user = new User(email, profile, provider, providerId, UserRole.ROLE_USER, true);
+        User user = User.createOAuth2User(email, provider, providerId);
 
         // then
         assertSoftly(softly -> {
@@ -102,7 +98,7 @@ class UserTest {
         UserProfile profile = UserProfile.of("관리자", null, "안녕하세요 꿈나무입니다.");
 
         // when
-        User user = new User(email, profile, OAuth2Provider.GOOGLE, "admin-123", UserRole.ROLE_ADMIN, true);
+        User user = User.createAdminUser(email, profile, OAuth2Provider.GOOGLE, "admin-123");
 
         // then
         assertThat(user.getRole()).isEqualTo(UserRole.ROLE_ADMIN);

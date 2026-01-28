@@ -3,8 +3,6 @@ package com.healthy_plate.auth.infrastructure.oauth2;
 import com.healthy_plate.auth.domain.model.OAuth2Provider;
 import com.healthy_plate.user.domain.model.Email;
 import com.healthy_plate.user.domain.model.User;
-import com.healthy_plate.user.domain.model.UserProfile;
-import com.healthy_plate.user.domain.model.UserRole;
 import com.healthy_plate.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -41,15 +39,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
     private User createUser(final OAuth2Provider provider, final OAuth2UserInfo userInfo) {
         final Email email = Email.from(userInfo.getEmail());
-        final UserProfile profile = UserProfile.createEmpty();
-        final User user = new User(
-            email,
-            profile,
-            provider,
-            userInfo.getProviderId(),
-            UserRole.ROLE_USER,
-            true
-        );
+        final User user = User.createOAuth2User(email, provider, userInfo.getProviderId());
         return userRepository.save(user);
     }
 
