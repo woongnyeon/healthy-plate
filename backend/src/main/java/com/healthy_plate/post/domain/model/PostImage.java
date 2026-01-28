@@ -25,6 +25,10 @@ public class PostImage {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "draft_id")
+    private Draft draft;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
@@ -37,8 +41,23 @@ public class PostImage {
     @Column(name = "file_size")
     private Long fileSize;
 
-    public void assignPost(Post post) {
+    private PostImage(final String s3Key, final String originalName, final Long fileSize) {
+        this.s3Key = s3Key;
+        this.originalName = originalName;
+        this.fileSize = fileSize;
+    }
+
+    public static PostImage create(final String s3Key, final String originalName, final Long fileSize) {
+        return new PostImage(s3Key, originalName, fileSize);
+    }
+
+    public void assignToDraft(final Draft draft) {
+        this.draft = draft;
+        this.post = null;
+    }
+
+    public void assignToPost(final Post post) {
+        this.draft = null;
         this.post = post;
     }
 }
-
